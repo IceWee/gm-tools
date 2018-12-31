@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" styleClass="def-container" stylesheets="@../css/default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bing.cqby.modules.MainController">
+    <children>
+        <HBox maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0">
+            <children>
+                <TabPane maxHeight="580.0" maxWidth="780.0" minHeight="580.0" minWidth="780.0" prefHeight="580.0" prefWidth="780.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab text="基本信息">
+                            <content>
+                                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+                                    <children>
+                                        <HBox prefHeight="150.0" prefWidth="780.0" spacing="10.0">
+                                            <children>
+                                                <TitledPane collapsible="false" prefHeight="140.0" prefWidth="385.0" text="账号读取">
+                                                    <content>
+                                                        <GridPane styleClass="config">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="117.0" minWidth="10.0" prefWidth="64.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="10.0" prefWidth="177.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                            </columnConstraints>
+                                                            <rowConstraints>
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            </rowConstraints>
+                                                            <children>
+                                                                <Label maxHeight="30.0" maxWidth="75.0" minHeight="30.0" minWidth="75.0" prefHeight="30.0" prefWidth="75.0" text="账号:" />
+                                                                <Label layoutX="21.0" layoutY="21.0" maxHeight="30.0" maxWidth="75.0" minHeight="30.0" minWidth="75.0" prefHeight="30.0" prefWidth="75.0" text="角色:" GridPane.rowIndex="1" />
+                                                                <TextField fx:id="account" maxHeight="30.0" maxWidth="175.0" minHeight="30.0" minWidth="175.0" prefHeight="30.0" prefWidth="175.0" promptText="登录账号" GridPane.columnIndex="1" />
+                                                                <ComboBox fx:id="character" maxHeight="30.0" maxWidth="175.0" minHeight="30.0" minWidth="175.0" onInputMethodTextChanged="#refreshCharacterInfo" prefHeight="30.0" prefWidth="175.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowSpan="2">
+                                                                    <children>
+                                                                        <Button fx:id="loadBtn" maxHeight="60.0" maxWidth="90.0" minHeight="60.0" minWidth="90.0" mnemonicParsing="false" onAction="#loadAccount" prefHeight="60.0" prefWidth="90.0" text="读取信息" />
+                                                                    </children>
+                                                                    <padding>
+                                                                        <Insets bottom="10.0" left="15.0" top="10.0" />
+                                                                    </padding>
+                                                                </VBox>
+                                                            </children>
+                                                        </GridPane>
+                                                    </content>
+                                                </TitledPane>
+                                                <TitledPane collapsible="false" prefHeight="140.0" prefWidth="385.0" text="元宝充值">
+                                                    <content>
+                                                        <GridPane styleClass="config">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="117.0" minWidth="10.0" prefWidth="82.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="10.0" prefWidth="179.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.0" minWidth="10.0" prefWidth="99.0" />
+                                                            </columnConstraints>
+                                                            <rowConstraints>
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            </rowConstraints>
+                                                            <children>
+                                                                <Label maxHeight="30.0" maxWidth="80.0" minHeight="30.0" minWidth="76.0" prefHeight="30.0" prefWidth="76.0" text="元宝数量:" />
+                                                                <TextField fx:id="rechargeYb" maxHeight="30.0" maxWidth="170.0" minHeight="30.0" minWidth="170.0" prefHeight="30.0" prefWidth="170.0" promptText="元宝数量" GridPane.columnIndex="1" />
+                                                                <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowSpan="2">
+                                                                    <children>
+                                                                        <Button fx:id="rechargeBtn" disable="true" maxHeight="60.0" maxWidth="90.0" minHeight="60.0" minWidth="90.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="90.0" text="充  值" />
+                                                                    </children>
+                                                                    <padding>
+                                                                        <Insets bottom="10.0" left="5.0" top="10.0" />
+                                                                    </padding>
+                                                                </VBox>
+                                                                <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                                                    <children>
+                                                                        <Text fill="#b90f0f" strokeType="OUTSIDE" strokeWidth="0.0" text="提示: 充值成功后进入游戏提取元宝" wrappingWidth="244.0" />
+                                                                    </children>
+                                                                    <padding>
+                                                                        <Insets top="15.0" />
+                                                                    </padding>
+                                                                </HBox>
+                                                            </children>
+                                                        </GridPane>
+                                                    </content>
+                                                </TitledPane>
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets top="10.0" />
+                                            </VBox.margin>
+                                        </HBox>
+                                        <HBox prefHeight="408.0" prefWidth="780.0">
+                                            <children>
+                                                <TitledPane collapsible="false" lineSpacing="4.0" prefHeight="433.0" prefWidth="805.0" text="角色信息">
+                                                    <content>
+                                                        <GridPane hgap="20.0" styleClass="config" vgap="10.0">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="106.0" minWidth="10.0" prefWidth="86.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="10.0" prefWidth="132.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="103.0" minWidth="10.0" prefWidth="86.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="149.0" minWidth="10.0" prefWidth="132.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="99.0" minWidth="10.0" prefWidth="87.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="169.0" minWidth="10.0" prefWidth="133.0" />
+                                                            </columnConstraints>
+                                                            <rowConstraints>
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            </rowConstraints>
+                                                            <children>
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="角色ID:" />
+                                                                <TextField fx:id="characterId" disable="true" editable="false" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="角色ID" GridPane.columnIndex="1" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="角色名称:" GridPane.columnIndex="2" />
+                                                                <TextField fx:id="characterName" disable="true" editable="false" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="角色名称" GridPane.columnIndex="3" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="角色职业:" GridPane.columnIndex="4" />
+                                                                <TextField fx:id="characterType" disable="true" editable="false" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="角色职业" GridPane.columnIndex="5" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="人物等级:" GridPane.rowIndex="1" />
+                                                                <TextField fx:id="level" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="人物等级" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="内功等级:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                <TextField fx:id="ngLevel" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="内功等级" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="转生等级:" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                                <TextField fx:id="zsLevel" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="转生等级" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="武魂等级:" GridPane.rowIndex="2" />
+                                                                <TextField fx:id="whLevel" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="武魂等级" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="金币:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                <TextField fx:id="gold" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="金币" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="绑定金币:" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                                <TextField fx:id="boundGold" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="绑定金币" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="元宝:" GridPane.rowIndex="3" />
+                                                                <TextField fx:id="yb" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="元宝" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="绑定元宝:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                <TextField fx:id="boundYb" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="绑定元宝" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="炼体值:" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                                <TextField fx:id="lianti" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="炼体值" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="VIP等级:" GridPane.rowIndex="4" />
+                                                                <ComboBox fx:id="vip" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnSpan="6" GridPane.rowIndex="5">
+                                                                    <children>
+                                                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Copyright © 2019 IceWee" textAlignment="RIGHT" wrappingWidth="225.0">
+                                                                            <fill>
+                                                                                <LinearGradient cycleMethod="REPEAT" endX="1.0" endY="0.45673076923076916" startX="0.6105769230769231" startY="0.7019230769230769">
+                                                                                    <stops>
+                                                                                        <Stop color="BLACK" />
+                                                                                        <Stop color="BLACK" offset="0.007434944237918215" />
+                                                                                        <Stop color="#fcfcfc" offset="0.007434944237918215" />
+                                                                                        <Stop color="#f0eded7f" offset="1.0" />
+                                                                                    </stops>
+                                                                                </LinearGradient>
+                                                                            </fill>
+                                                                        </Text>
+                                                                    </children>
+                                                                </HBox>
+                                                <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="4">
+                                                   <children>
+                                                      <Button fx:id="updateBtn" disable="true" mnemonicParsing="false" onAction="#updateCharacterInfo" prefHeight="48.0" prefWidth="131.0" text="保存修改" />
+                                                   </children>
+                                                </HBox>
+                                                            </children>
+                                                        </GridPane>
+                                                    </content>
+                                                </TitledPane>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </content>
+                        </Tab>
+                        <Tab text="物品查询" />
+                        <Tab text="背包装备" />
+                    </tabs>
+                </TabPane>
+            </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+        </HBox>
+    </children>
+</AnchorPane>
