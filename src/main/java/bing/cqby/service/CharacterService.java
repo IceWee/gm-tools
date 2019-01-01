@@ -4,6 +4,7 @@ import bing.cqby.common.Constants;
 import bing.cqby.common.DBHelper;
 import bing.cqby.model.Character;
 import bing.cqby.util.DateUtils;
+import bing.cqby.util.SQLUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -80,7 +81,7 @@ public final class CharacterService {
      * @throws Exception
      */
     public List<Character> query(String account) throws Exception {
-        String sql = replacePlaceholders(QUERY_BY_ACCOUNT);
+        String sql = SQLUtils.replacePlaceholders(QUERY_BY_ACCOUNT);
         List<Character> characters = DBHelper.getInstance().query(Character.class, sql, new String[]{account});
         return characters;
     }
@@ -93,7 +94,7 @@ public final class CharacterService {
      * @throws Exception
      */
     public List<Character> query(Long accountId) throws Exception {
-        String sql = replacePlaceholders(QUERY_BY_ACCOUNT_ID);
+        String sql = SQLUtils.replacePlaceholders(QUERY_BY_ACCOUNT_ID);
         List<Character> characters = DBHelper.getInstance().query(Character.class, sql, new Long[]{accountId});
         return characters;
     }
@@ -161,21 +162,6 @@ public final class CharacterService {
         String timestamp = DateUtils.createTimestamp();
         builder.append("'").append(timestamp).append("', 0)");
         DBHelper.getInstance().execute(builder.toString());
-    }
-
-    /**
-     * 替换SQL模板中的占位符
-     *
-     * @param sqlTemplate
-     * @return
-     */
-    private String replacePlaceholders(String sqlTemplate) {
-        String loginDB = DBHelper.getInstance().getLoginDB();
-        String gameDB = DBHelper.getInstance().getGameDB();
-        log.info("loginDB: {}, gameDB: {}", loginDB, gameDB);
-        String sql = StringUtils.replace(sqlTemplate, "[login]", loginDB);
-        sql = StringUtils.replace(sql, "[game]", gameDB);
-        return sql;
     }
 
 }

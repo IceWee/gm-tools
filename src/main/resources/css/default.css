@@ -2,8 +2,8 @@
     Created on : 2018-12-23, 19:24:54
     Author     : bing
 */
-/* 数据库配置界面 */
-.config {
+/* 默认背景 */
+.def-bg {
     -fx-background-image: url("../images/coarse_grid.png");
     -fx-background-repeat: repeat;
     -fx-background-color: linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
@@ -66,6 +66,13 @@
     -fx-font-size: 14;
     -fx-fill: FIREBRICK;
     -fx-font-weight: bold;
-    /*-fx-effect: dropshadow(gaussian, rgba(255,255,255,0.5), 0, 0, 0, 1);*/
     -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.6), 0, 0.0, 0, 1);
+}
+
+.table-view {
+    -fx-background-color: #FFFFFF;
+}
+
+.table-view .column-header-background .label {
+    -fx-text-fill: rgba(0, 0, 0, 0.8);
 }

@@ -1,6 +1,7 @@
 package bing.cqby.common;
 
 import bing.cqby.config.Config;
+import bing.cqby.model.Page;
 import bing.cqby.util.ReflectionUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -79,6 +80,56 @@ public final class DBHelper {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    /**
+     * 计数
+     *
+     * @param sql
+     * @return
+     * @throws Exception
+     */
+    public int count(String sql, Object... args) throws Exception {
+        int count = 0;
+        String countSQL = createCountSQL(sql);
+        log.info("sql: \r\n{}", countSQL);
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement(countSQL);
+            for (int i = 0; i < args.length; i++) {
+                statement.setObject(i + 1, args[i]);
+            }
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                count = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new Exception(e.getMessage(), e);
+        } finally {
+            release(statement, resultSet);
+        }
+        return count;
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param clazz
+     * @param page
+     * @param sql
+     * @param args
+     * @param <T>
+     * @throws Exception
+     */
+    public <T> void query(Class<T> clazz, Page<T> page, String sql, Object... args) throws Exception {
+        String pageSQL = createPageSQL(sql, page);
+        int totalRows = count(sql, args);
+        page.setTotalRows(totalRows);
+        List<T> rows = query(clazz, pageSQL, args);
+        page.setRows(rows);
     }
 
     /**
@@ -199,6 +250,33 @@ public final class DBHelper {
             list.add(bean);
         }
         return list;
+    }
+
+    /**
+     * 生成统计行数SQL
+     *
+     * @param sql
+     * @return
+     */
+    private String createCountSQL(String sql) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT COUNT(1) counts FROM (").append(sql).append(") T");
+        return builder.toString();
+    }
+
+    /**
+     * 生成分页SQL
+     *
+     * @param sql
+     * @param page
+     * @return
+     */
+    private String createPageSQL(String sql, Page page) {
+        StringBuilder builder = new StringBuilder(sql);
+        int rowIndex = page.getRowIndex();
+        int pageSize = page.getPageSize();
+        builder.append(" LIMIT ").append(rowIndex).append(", ").append(pageSize);
+        return builder.toString();
     }
 
     /**

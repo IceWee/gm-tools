@@ -2,9 +2,13 @@ package bing.cqby.modules;
 
 import bing.cqby.common.Constants;
 import bing.cqby.model.Character;
+import bing.cqby.model.Item;
+import bing.cqby.model.Page;
 import bing.cqby.task.CharacterLoadTaskService;
 import bing.cqby.task.CharacterRechargeTaskService;
 import bing.cqby.task.CharacterUpdateTaskService;
+import bing.cqby.task.ItemSearchTaskService;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +16,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -34,70 +43,73 @@ import java.util.ResourceBundle;
 @Slf4j
 public class MainController implements Initializable {
 
+    /* 选项卡1 begin */
     @FXML
     private TextField account;
-
     @FXML
     private ComboBox<Character> character;
-
     @FXML
     private TextField rechargeYb;
-
     @FXML
     private TextField characterId;
-
     @FXML
     private TextField characterName;
-
     @FXML
     private TextField characterType;
-
     @FXML
     private TextField level;
-
     @FXML
     private TextField ngLevel;
-
     @FXML
     private TextField zsLevel;
-
     @FXML
     private TextField whLevel;
-
     @FXML
     private TextField gold;
-
     @FXML
     private TextField boundGold;
-
     @FXML
     private TextField yb;
-
     @FXML
     private TextField boundYb;
-
     @FXML
     private TextField lianti;
-
     @FXML
     private ComboBox<Integer> vip;
-
     @FXML
     private Button loadBtn;
-
     @FXML
     private Button rechargeBtn;
-
     @FXML
     private Button updateBtn;
-
     private List<Character> characters = new ArrayList<>();
-
     private Long selectedCharacterId = null;
+    /* 选项卡1 end */
+
+    /* 选项卡2 begin */
+    @FXML
+    private TextField srchItemName;
+    @FXML
+    private TableView<Item> itemList;
+    @FXML
+    private HBox itemListContainer;
+    @FXML
+    private TableColumn<Item, Long> entry;
+    @FXML
+    private TableColumn<Item, String> name1;
+    @FXML
+    private TableColumn<Item, String> description;
+    @FXML
+    private Button searchBtn;
+    @FXML
+    private Pagination itemPage;
+    private Page<Item> page = new Page<>();
+    /* 选项卡2 end */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initChoiceBoxes();
+        configureTable();
     }
 
     /**
@@ -188,6 +200,89 @@ public class MainController implements Initializable {
     }
 
     /**
+     * 刷新角色信息
+     */
+    public void refreshCharacterInfo() {
+        Character character = this.character.getSelectionModel().getSelectedItem();
+        if (character != null) {
+            this.characterId.setText(Objects.toString(character.getCharacterId()));
+            this.characterName.setText(character.getCharacterName());
+            this.characterType.setText(character.getCharacterType());
+            this.level.setText(Objects.toString(character.getLevel()));
+            this.ngLevel.setText(Objects.toString(character.getNgLevel()));
+            this.gold.setText(Objects.toString(character.getGold()));
+            this.boundGold.setText(Objects.toString(character.getBoundGold()));
+            this.yb.setText(Objects.toString(character.getYb()));
+            this.boundYb.setText(Objects.toString(character.getBoundYb()));
+            this.vip.getSelectionModel().select(character.getVip());
+            this.zsLevel.setText(Objects.toString(character.getZsLevel()));
+            this.whLevel.setText(Objects.toString(character.getWhLevel()));
+            this.lianti.setText(Objects.toString(character.getLianti()));
+        } else {
+            this.characterId.setText(null);
+            this.characterName.setText(null);
+            this.characterType.setText(null);
+            this.level.setText(null);
+            this.ngLevel.setText(null);
+            this.gold.setText(null);
+            this.boundGold.setText(null);
+            this.yb.setText(null);
+            this.boundYb.setText(null);
+            this.vip.getSelectionModel().selectFirst();
+            this.zsLevel.setText(null);
+            this.whLevel.setText(null);
+            this.lianti.setText(null);
+        }
+    }
+
+    /**
+     * 物品查询
+     *
+     * @param actionEvent
+     */
+    public void searchItems(ActionEvent actionEvent) {
+        this.searchBtn.setDisable(true);
+        String itemName = this.srchItemName.getText();
+        ItemSearchTaskService service = new ItemSearchTaskService();
+        service.setItemName(itemName);
+        service.setPage(page);
+        service.setOnSucceeded(workerStateEvent -> {
+            ObservableList<Item> items = FXCollections.observableArrayList(this.page.getRows());
+            this.itemList.setItems(items);
+            this.itemPage.setCurrentPageIndex(0);
+            this.itemPage.setPageCount(this.page.getTotalPages());
+            this.searchBtn.setDisable(false);
+        });
+        service.setOnFailed(workerStateEvent -> {
+            Throwable e = workerStateEvent.getSource().getException();
+            errorHandle(e, "物品检索失败", this.searchBtn);
+        });
+        service.start();
+    }
+
+    /**
+     * 设置表格
+     */
+    private void configureTable() {
+        this.entry.setCellValueFactory(new PropertyValueFactory<>("entry"));
+        this.name1.setCellValueFactory(new PropertyValueFactory<>("name1"));
+        this.description.setCellValueFactory(new PropertyValueFactory<>("description"));
+        this.itemPage.setPageFactory(pageIndex -> {
+            if (pageIndex > page.getTotalPages() - 1) {
+                return null;
+            } else {
+                return createItemListPage(pageIndex);
+            }
+        });
+    }
+
+    private HBox createItemListPage(int pageIndex) {
+        this.itemListContainer.getChildren().clear();
+        this.itemListContainer.getChildren().add(this.itemList);
+        return this.itemListContainer;
+    }
+
+    /**
      * 操作失败处理
      *
      * @param e
@@ -241,42 +336,6 @@ public class MainController implements Initializable {
     }
 
     /**
-     * 刷新角色信息
-     */
-    public void refreshCharacterInfo() {
-        Character character = this.character.getSelectionModel().getSelectedItem();
-        if (character != null) {
-            this.characterId.setText(Objects.toString(character.getCharacterId()));
-            this.characterName.setText(character.getCharacterName());
-            this.characterType.setText(character.getCharacterType());
-            this.level.setText(Objects.toString(character.getLevel()));
-            this.ngLevel.setText(Objects.toString(character.getNgLevel()));
-            this.gold.setText(Objects.toString(character.getGold()));
-            this.boundGold.setText(Objects.toString(character.getBoundGold()));
-            this.yb.setText(Objects.toString(character.getYb()));
-            this.boundYb.setText(Objects.toString(character.getBoundYb()));
-            this.vip.getSelectionModel().select(character.getVip());
-            this.zsLevel.setText(Objects.toString(character.getZsLevel()));
-            this.whLevel.setText(Objects.toString(character.getWhLevel()));
-            this.lianti.setText(Objects.toString(character.getLianti()));
-        } else {
-            this.characterId.setText(null);
-            this.characterName.setText(null);
-            this.characterType.setText(null);
-            this.level.setText(null);
-            this.ngLevel.setText(null);
-            this.gold.setText(null);
-            this.boundGold.setText(null);
-            this.yb.setText(null);
-            this.boundYb.setText(null);
-            this.vip.getSelectionModel().selectFirst();
-            this.zsLevel.setText(null);
-            this.whLevel.setText(null);
-            this.lianti.setText(null);
-        }
-    }
-
-    /**
      * 选中角色
      *
      * @param characterId
@@ -290,7 +349,6 @@ public class MainController implements Initializable {
                 break;
             }
         }
-//        this.character.setValue(character);
         this.character.getSelectionModel().select(character);
     }
 
