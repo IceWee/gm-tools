@@ -91,6 +91,7 @@ public final class DBHelper {
      * @throws Exception
      */
     public <T> List<T> query(Class<T> clazz, String sql, Object... args) throws Exception {
+        log.info("SQL: \r\n{}", sql);
         Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -122,6 +123,27 @@ public final class DBHelper {
             throw new Exception(e.getMessage(), e);
         } finally {
             release(statement, resultSet);
+        }
+    }
+
+    /**
+     * 执行SQL
+     *
+     * @param sql
+     * @throws Exception
+     */
+    public void execute(String sql) throws Exception {
+        log.info("SQL: \r\n{}", sql);
+        Connection connection = getConnection();
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            statement.execute(sql);
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new Exception(e.getMessage(), e);
+        } finally {
+            release(statement, null);
         }
     }
 

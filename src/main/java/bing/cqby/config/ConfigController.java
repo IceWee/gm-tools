@@ -1,7 +1,7 @@
 package bing.cqby.config;
 
 import bing.cqby.common.Constants;
-import bing.cqby.task.DatabaseTaskService;
+import bing.cqby.task.DatabaseConnectTaskService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -74,17 +74,17 @@ public class ConfigController implements Initializable {
      */
     public void connectDB(ActionEvent actionEvent) {
         if (validate()) {
-            setControlsDisable(true);
+            this.connectBtn.setDisable(true);
             Config config = createConfig();
-            DatabaseTaskService service = new DatabaseTaskService();
+            DatabaseConnectTaskService service = new DatabaseConnectTaskService();
             service.setConfig(config);
             service.setOnSucceeded(workerStateEvent -> {
                 closeSelf();
-                setControlsDisable(false);
+                this.connectBtn.setDisable(false);
             });
             service.setOnFailed(workerStateEvent -> {
                 showErrorTip("数据库连接失败");
-                setControlsDisable(false);
+                this.connectBtn.setDisable(false);
             });
             service.start();
         }
@@ -164,21 +164,6 @@ public class ConfigController implements Initializable {
     private void clearErrorTip() {
         this.errorTip.setText(StringUtils.EMPTY);
         this.errorTip.setVisible(false);
-    }
-
-    /**
-     * 设置控制器的可用性
-     *
-     * @param disable
-     */
-    private void setControlsDisable(boolean disable) {
-        this.dbIP.setDisable(disable);
-        this.dbPort.setDisable(disable);
-        this.dbUser.setDisable(disable);
-        this.dbPasswd.setDisable(disable);
-        this.loginDB.setDisable(disable);
-        this.gameDB.setDisable(disable);
-        this.connectBtn.setDisable(disable);
     }
 
     /**
