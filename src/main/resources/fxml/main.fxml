@@ -183,7 +183,7 @@
                         </Tab>
                         <Tab text="物品查询">
                             <content>
-                                <VBox prefHeight="200.0" prefWidth="100.0">
+                                <VBox prefHeight="200.0" prefWidth="100.0" styleClass="def-bg">
                                     <children>
                                           <GridPane minHeight="70.0" prefHeight="70.0" prefWidth="780.0" styleClass="def-bg">
                                               <columnConstraints>
