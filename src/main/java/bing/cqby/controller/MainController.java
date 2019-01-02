@@ -1,9 +1,9 @@
-package bing.cqby.modules;
+package bing.cqby.controller;
 
 import bing.cqby.common.Constants;
-import bing.cqby.model.Character;
-import bing.cqby.model.Item;
-import bing.cqby.model.Page;
+import bing.cqby.domain.Character;
+import bing.cqby.domain.Item;
+import bing.cqby.domain.Page;
 import bing.cqby.task.CharacterLoadTaskService;
 import bing.cqby.task.CharacterRechargeTaskService;
 import bing.cqby.task.CharacterUpdateTaskService;

@@ -1,8 +1,8 @@
 package bing.cqby.service;
 
-import bing.cqby.common.DBHelper;
-import bing.cqby.model.Item;
-import bing.cqby.model.Page;
+import bing.cqby.domain.Item;
+import bing.cqby.domain.Page;
+import bing.cqby.util.DBHelper;
 import bing.cqby.util.SQLUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +43,7 @@ public final class ItemService {
         }
         builder.append(" ORDER BY entry");
         String sql = builder.toString();
-        sql = SQLUtils.replacePlaceholders(sql);
+        sql = SQLUtils.replaceDBNames(sql);
         DBHelper.getInstance().query(Item.class, page, sql, args);
     }
 

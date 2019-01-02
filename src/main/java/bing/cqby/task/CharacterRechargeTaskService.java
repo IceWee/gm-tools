@@ -1,6 +1,6 @@
 package bing.cqby.task;
 
-import bing.cqby.model.Character;
+import bing.cqby.domain.Character;
 import bing.cqby.service.CharacterService;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;

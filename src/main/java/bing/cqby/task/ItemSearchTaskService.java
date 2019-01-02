@@ -1,7 +1,7 @@
 package bing.cqby.task;
 
-import bing.cqby.model.Item;
-import bing.cqby.model.Page;
+import bing.cqby.domain.Item;
+import bing.cqby.domain.Page;
 import bing.cqby.service.ItemService;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

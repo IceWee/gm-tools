@@ -1,4 +1,4 @@
-package bing.cqby.model;
+package bing.cqby.domain;
 
 import lombok.Data;
 

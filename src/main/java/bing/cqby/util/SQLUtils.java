@@ -1,6 +1,5 @@
 package bing.cqby.util;
 
-import bing.cqby.common.DBHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,14 +19,14 @@ public final class SQLUtils {
     /**
      * 替换SQL模板中的占位符
      *
-     * @param sqlTemplate
+     * @param sql
      * @return
      */
-    public static String replacePlaceholders(String sqlTemplate) {
+    public static String replaceDBNames(String sql) {
         String loginDB = DBHelper.getInstance().getLoginDB();
         String gameDB = DBHelper.getInstance().getGameDB();
         log.info("loginDB: {}, gameDB: {}", loginDB, gameDB);
-        String sql = StringUtils.replace(sqlTemplate, "[login]", loginDB);
+        sql = StringUtils.replace(sql, "[login]", loginDB);
         sql = StringUtils.replace(sql, "[game]", gameDB);
         return sql;
     }

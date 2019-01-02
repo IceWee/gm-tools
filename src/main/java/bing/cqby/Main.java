@@ -1,7 +1,7 @@
 package bing.cqby;
 
-import bing.cqby.common.FXMLHelper;
-import bing.cqby.config.ConfigController;
+import bing.cqby.controller.ConfigController;
+import bing.cqby.util.FXMLHelper;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;

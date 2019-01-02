@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="configPane" alignment="center" hgap="10.0" styleClass="def-bg"
-          vgap="10.0" xmlns="http://javafx.com/javafx/8" fx:controller="bing.cqby.config.ConfigController">
+          vgap="10.0" xmlns="http://javafx.com/javafx/8" fx:controller="bing.cqby.controller.ConfigController">
     <padding>
         <Insets bottom="25.0" left="25.0" right="25.0" top="25.0"/>
     </padding>

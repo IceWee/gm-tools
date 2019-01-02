@@ -1,8 +1,8 @@
 package bing.cqby.service;
 
 import bing.cqby.common.Constants;
-import bing.cqby.common.DBHelper;
-import bing.cqby.model.Character;
+import bing.cqby.domain.Character;
+import bing.cqby.util.DBHelper;
 import bing.cqby.util.DateUtils;
 import bing.cqby.util.SQLUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +81,7 @@ public final class CharacterService {
      * @throws Exception
      */
     public List<Character> query(String account) throws Exception {
-        String sql = SQLUtils.replacePlaceholders(QUERY_BY_ACCOUNT);
+        String sql = SQLUtils.replaceDBNames(QUERY_BY_ACCOUNT);
         List<Character> characters = DBHelper.getInstance().query(Character.class, sql, new String[]{account});
         return characters;
     }
@@ -94,7 +94,7 @@ public final class CharacterService {
      * @throws Exception
      */
     public List<Character> query(Long accountId) throws Exception {
-        String sql = SQLUtils.replacePlaceholders(QUERY_BY_ACCOUNT_ID);
+        String sql = SQLUtils.replaceDBNames(QUERY_BY_ACCOUNT_ID);
         List<Character> characters = DBHelper.getInstance().query(Character.class, sql, new Long[]{accountId});
         return characters;
     }

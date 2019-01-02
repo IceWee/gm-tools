@@ -18,7 +18,7 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" id="AnchorPane" maxHeight="600.0" maxWidth="800.0" minHeight="600.0"
             minWidth="800.0" prefHeight="600.0" prefWidth="800.0" styleClass="def-container"
             stylesheets="@../css/default.css" xmlns="http://javafx.com/javafx/8"
-            fx:controller="bing.cqby.modules.MainController">
+            fx:controller="bing.cqby.controller.MainController">
     <children>
         <HBox maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0"
               prefWidth="800.0">

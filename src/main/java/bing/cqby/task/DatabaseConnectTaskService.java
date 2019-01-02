@@ -1,7 +1,7 @@
 package bing.cqby.task;
 
-import bing.cqby.common.DBHelper;
-import bing.cqby.config.Config;
+import bing.cqby.domain.Config;
+import bing.cqby.util.DBHelper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
