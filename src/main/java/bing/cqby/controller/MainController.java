@@ -10,7 +10,6 @@ import bing.cqby.task.CharacterUpdateTaskService;
 import bing.cqby.task.ItemSearchTaskService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -109,15 +108,13 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initChoiceBoxes();
-        configureTable();
+//        configureTable();
     }
 
     /**
      * 读取账号
-     *
-     * @param actionEvent
      */
-    public void loadAccount(ActionEvent actionEvent) {
+    public void loadAccount() {
         String account = this.account.getText();
         if (StringUtils.isNotBlank(account)) {
             this.loadBtn.setDisable(true);
@@ -142,7 +139,7 @@ public class MainController implements Initializable {
     /**
      * 更新游戏角色信息
      */
-    public void updateCharacterInfo(ActionEvent actionEvent) {
+    public void updateCharacterInfo() {
         Character character = this.character.getSelectionModel().getSelectedItem();
         if (character != null) {
             Character updateCharacter = createUpdateCharacter();
@@ -168,10 +165,8 @@ public class MainController implements Initializable {
 
     /**
      * 元宝充值
-     *
-     * @param actionEvent
      */
-    public void rechargeYb(ActionEvent actionEvent) {
+    public void rechargeYb() {
         Character character = this.character.getSelectionModel().getSelectedItem();
         if (character != null) {
             String yb = substring(this.rechargeYb.getText(), Constants.INT_MAX_LENGTH);
@@ -237,10 +232,8 @@ public class MainController implements Initializable {
 
     /**
      * 物品查询
-     *
-     * @param actionEvent
      */
-    public void searchItems(ActionEvent actionEvent) {
+    public void searchItems() {
         this.searchBtn.setDisable(true);
         String itemName = this.srchItemName.getText();
         ItemSearchTaskService service = new ItemSearchTaskService();
