@@ -127,9 +127,9 @@ public final class DBHelper {
     public <T> void query(Class<T> clazz, Page<T> page, String sql, Object... args) throws Exception {
         String pageSQL = createPageSQL(sql, page);
         int totalRows = count(sql, args);
-        page.setTotalRows(totalRows);
+        page.setTotalCount(totalRows);
         List<T> rows = query(clazz, pageSQL, args);
-        page.setRows(rows);
+        page.setData(rows);
     }
 
     /**
@@ -273,7 +273,7 @@ public final class DBHelper {
      */
     private String createPageSQL(String sql, Page page) {
         StringBuilder builder = new StringBuilder(sql);
-        int rowIndex = page.getRowIndex();
+        int rowIndex = page.getDataIndex();
         int pageSize = page.getPageSize();
         builder.append(" LIMIT ").append(rowIndex).append(", ").append(pageSize);
         return builder.toString();

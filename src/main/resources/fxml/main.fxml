@@ -185,46 +185,37 @@
                             <content>
                                 <VBox prefHeight="200.0" prefWidth="100.0">
                                     <children>
-                                        <HBox maxHeight="93.0" maxWidth="780.0" minHeight="60.0" minWidth="780.0" prefHeight="93.0" prefWidth="780.0">
-                                            <children>
-                                                <GridPane prefHeight="120.0" prefWidth="780.0" styleClass="def-bg">
-                                                    <columnConstraints>
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.0" minWidth="10.0" prefWidth="196.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="391.0" minWidth="10.0" prefWidth="391.0" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="192.0" />
-                                                    </columnConstraints>
-                                                    <rowConstraints>
-                                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                    </rowConstraints>
-                                                    <children>
-                                                        <Label alignment="CENTER" prefHeight="30.0" prefWidth="245.0" text="物品名称:" />
-                                                        <TextField fx:id="srchItemName" promptText="物品名称" GridPane.columnIndex="1" />
-                                                        <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#searchItems" prefHeight="30.0" prefWidth="100.0" text="检索物品" GridPane.columnIndex="2">
-                                                            <GridPane.margin>
-                                                                <Insets left="50.0" />
-                                                            </GridPane.margin>
-                                                        </Button>
-                                                    </children>
-                                                </GridPane>
-                                            </children>
-                                        </HBox>
-                                        <HBox fx:id="itemListContainer" alignment="CENTER" maxHeight="483.0" maxWidth="780.0" minHeight="60.0" minWidth="780.0" prefHeight="483.0" prefWidth="780.0" styleClass="def-bg">
-                                            <children>
-                                                <VBox>
-                                                    <children>
-                                                        <TableView prefHeight="424.0" prefWidth="806.0">
-                                                            <columns>
-                                                                <TableColumn editable="false" prefWidth="120.0" sortable="false" text="物品ID" />
-                                                                <TableColumn editable="false" prefWidth="260.0" sortable="false" text="物品名称" />
-                                                                <TableColumn editable="false" prefWidth="389.0" sortable="false" text="物品描述" />
-                                                            </columns>
-                                                        </TableView>
-                                                        <Pagination fx:id="itemPage" maxHeight="60.0" maxWidth="780.0" minHeight="60.0" minWidth="780.0" prefHeight="60.0" prefWidth="780.0">
-                                                        </Pagination>
-                                                    </children>
-                                                </VBox>
-                                            </children>
-                                        </HBox>
+                                          <GridPane minHeight="70.0" prefHeight="70.0" prefWidth="780.0" styleClass="def-bg">
+                                              <columnConstraints>
+                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.0" minWidth="10.0" prefWidth="196.0" />
+                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="391.0" minWidth="10.0" prefWidth="391.0" />
+                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="10.0" prefWidth="192.0" />
+                                              </columnConstraints>
+                                              <rowConstraints>
+                                                  <RowConstraints maxHeight="268.0" minHeight="10.0" prefHeight="75.0" vgrow="SOMETIMES" />
+                                              </rowConstraints>
+                                              <children>
+                                                  <Label alignment="CENTER" prefHeight="30.0" prefWidth="245.0" text="物品名称:" />
+                                                  <TextField fx:id="searchItemName" onKeyReleased="#searchItems" promptText="物品名称" GridPane.columnIndex="1" />
+                                                  <Button fx:id="searchBtn" mnemonicParsing="false" onAction="#searchItems" prefHeight="30.0" prefWidth="100.0" text="检索物品" GridPane.columnIndex="2">
+                                                      <GridPane.margin>
+                                                          <Insets left="50.0" />
+                                                      </GridPane.margin>
+                                                  </Button>
+                                              </children>
+                                          </GridPane>
+                              <VBox fx:id="itemListBox" prefHeight="420.0" prefWidth="780.0">
+                                 <children>
+                                                  <TableView fx:id="itemList" minHeight="-Infinity" prefHeight="420.0">
+                                                      <columns>
+                                                          <TableColumn fx:id="entry" editable="false" prefWidth="120.0" sortable="false" text="物品ID" />
+                                                          <TableColumn fx:id="name1" editable="false" prefWidth="260.0" sortable="false" text="物品名称" />
+                                                          <TableColumn fx:id="description" editable="false" prefWidth="377.0" sortable="false" text="物品描述" />
+                                                      </columns>
+                                                  </TableView>
+                                 </children>
+                              </VBox>
+                                          <Pagination fx:id="itemPage" prefHeight="500.0" prefWidth="780.0" />
                                     </children>
                                 </VBox>
                             </content>

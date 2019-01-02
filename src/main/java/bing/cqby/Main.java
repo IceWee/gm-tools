@@ -31,6 +31,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        stage.setTitle("传奇霸业GM工具V1.0");
         URL location = FXMLHelper.getInstance().getMainFXML();
         Parent root = FXMLLoader.load(location);
         Scene scene = new Scene(root);

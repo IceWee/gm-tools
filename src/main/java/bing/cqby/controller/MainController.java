@@ -20,7 +20,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -87,11 +87,11 @@ public class MainController implements Initializable {
 
     /* 选项卡2 begin */
     @FXML
-    private TextField srchItemName;
+    private TextField searchItemName;
+    @FXML
+    private VBox itemListBox;
     @FXML
     private TableView<Item> itemList;
-    @FXML
-    private HBox itemListContainer;
     @FXML
     private TableColumn<Item, Long> entry;
     @FXML
@@ -102,13 +102,16 @@ public class MainController implements Initializable {
     private Button searchBtn;
     @FXML
     private Pagination itemPage;
+    private boolean firstTime = true;
     private Page<Item> page = new Page<>();
     /* 选项卡2 end */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        log.info("initialize...");
         initChoiceBoxes();
-//        configureTable();
+        configureTable();
+        configurePager();
     }
 
     /**
@@ -234,15 +237,18 @@ public class MainController implements Initializable {
      * 物品查询
      */
     public void searchItems() {
+        this.firstTime = false;
         this.searchBtn.setDisable(true);
-        String itemName = this.srchItemName.getText();
+        this.page.setPageNo(1);
+        this.itemPage.setPageCount(1);
+        this.itemPage.setCurrentPageIndex(0);
+        String itemName = this.searchItemName.getText();
         ItemSearchTaskService service = new ItemSearchTaskService();
         service.setItemName(itemName);
-        service.setPage(page);
+        service.setPage(this.page);
         service.setOnSucceeded(workerStateEvent -> {
-            ObservableList<Item> items = FXCollections.observableArrayList(this.page.getRows());
+            ObservableList<Item> items = FXCollections.observableArrayList(this.page.getData());
             this.itemList.setItems(items);
-            this.itemPage.setCurrentPageIndex(0);
             this.itemPage.setPageCount(this.page.getTotalPages());
             this.searchBtn.setDisable(false);
         });
@@ -260,19 +266,37 @@ public class MainController implements Initializable {
         this.entry.setCellValueFactory(new PropertyValueFactory<>("entry"));
         this.name1.setCellValueFactory(new PropertyValueFactory<>("name1"));
         this.description.setCellValueFactory(new PropertyValueFactory<>("description"));
-        this.itemPage.setPageFactory(pageIndex -> {
-            if (pageIndex > page.getTotalPages() - 1) {
-                return null;
-            } else {
-                return createItemListPage(pageIndex);
-            }
-        });
     }
 
-    private HBox createItemListPage(int pageIndex) {
-        this.itemListContainer.getChildren().clear();
-        this.itemListContainer.getChildren().add(this.itemList);
-        return this.itemListContainer;
+    /**
+     * 设置分页器
+     */
+    private void configurePager() {
+        this.itemPage.setPageCount(1);
+        this.itemPage.setCurrentPageIndex(0);
+        this.itemPage.setPageFactory(pageIndex -> createItemListPage(pageIndex));
+    }
+
+    /**
+     * 生成新页面
+     *
+     * @param pageIndex
+     * @return
+     */
+    private VBox createItemListPage(int pageIndex) {
+        this.page.setPageNo(pageIndex + 1);
+        if (!firstTime) {
+            String itemName = this.searchItemName.getText();
+            ItemSearchTaskService service = new ItemSearchTaskService();
+            service.setItemName(itemName);
+            service.setPage(this.page);
+            service.setOnSucceeded(workerStateEvent -> {
+                ObservableList<Item> items = FXCollections.observableArrayList(this.page.getData());
+                this.itemList.setItems(items);
+            });
+            service.start();
+        }
+        return this.itemListBox;
     }
 
     /**

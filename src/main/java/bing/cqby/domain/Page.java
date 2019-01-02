@@ -26,7 +26,7 @@ public class Page<T> {
     /**
      * 总记录数
      */
-    private int totalRows;
+    private int totalCount;
 
     /**
      * 总页数
@@ -36,23 +36,23 @@ public class Page<T> {
     /**
      * 数据记录下标
      */
-    private volatile int rowIndex;
+    private volatile int dataIndex;
 
     /**
      * 数据
      */
-    private List<T> rows;
+    private List<T> data;
 
-    public int getRowIndex() {
-        rowIndex = (pageNo - 1) * pageSize;
-        return rowIndex;
+    public int getDataIndex() {
+        dataIndex = (pageNo - 1) * pageSize;
+        return dataIndex;
     }
 
     public int getTotalPages() {
-        if (totalRows % pageSize == 0) {
-            totalPages = totalRows / pageSize;
+        if (totalCount % pageSize == 0) {
+            totalPages = totalCount / pageSize;
         } else {
-            totalPages = (totalRows / pageSize) + 1;
+            totalPages = (totalCount / pageSize) + 1;
         }
         return totalPages;
     }
