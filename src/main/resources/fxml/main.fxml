@@ -25,13 +25,13 @@
     <children>
         <HBox maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0">
             <children>
-                <TabPane maxHeight="619.0" maxWidth="824.0" minHeight="580.0" minWidth="780.0" prefHeight="600.0" prefWidth="822.0" tabClosingPolicy="UNAVAILABLE">
+                <TabPane maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                         <Tab text="基本信息">
                             <content>
-                                <VBox prefHeight="581.0" prefWidth="800.0">
+                                <VBox prefHeight="564.0" prefWidth="800.0">
                                     <children>
-                                        <HBox prefHeight="150.0" prefWidth="780.0" spacing="4.0">
+                                        <HBox prefHeight="144.0" prefWidth="800.0" spacing="4.0">
                                             <children>
                                                 <TitledPane collapsible="false" prefHeight="140.0" prefWidth="398.0" text="账号读取">
                                                     <content>
@@ -102,9 +102,9 @@
                                                 <Insets top="2.0" />
                                             </VBox.margin>
                                         </HBox>
-                                        <HBox prefHeight="422.0" prefWidth="800.0">
+                                        <HBox prefHeight="420.0" prefWidth="800.0">
                                             <children>
-                                                <TitledPane collapsible="false" lineSpacing="4.0" prefHeight="433.0" prefWidth="805.0" text="角色信息">
+                                                <TitledPane collapsible="false" lineSpacing="4.0" prefHeight="420.0" prefWidth="800.0" text="角色信息">
                                                     <content>
                                                         <GridPane hgap="20.0" styleClass="def-bg" vgap="10.0">
                                                             <columnConstraints>
@@ -183,9 +183,9 @@
                         </Tab>
                         <Tab text="物品查询">
                             <content>
-                                <VBox prefHeight="200.0" prefWidth="100.0" styleClass="def-bg">
+                                <VBox prefHeight="564.0" prefWidth="800.0" styleClass="def-bg">
                                     <children>
-                                          <GridPane minHeight="70.0" prefHeight="70.0" prefWidth="780.0" styleClass="def-bg">
+                                          <GridPane minHeight="64.0" prefHeight="64.0" prefWidth="800.0" styleClass="def-bg">
                                               <columnConstraints>
                                                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.0" minWidth="10.0" prefWidth="196.0" />
                                                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="391.0" minWidth="10.0" prefWidth="391.0" />
@@ -204,9 +204,9 @@
                                                   </Button>
                                               </children>
                                           </GridPane>
-                              <VBox fx:id="itemListBox" prefHeight="420.0" prefWidth="780.0">
+                              <VBox fx:id="itemListBox" prefHeight="420.0" prefWidth="800.0">
                                  <children>
-                                                  <TableView fx:id="itemList" minHeight="-Infinity" prefHeight="420.0">
+                                                  <TableView fx:id="itemList" minHeight="-Infinity" prefHeight="430.0" prefWidth="800.0">
                                                       <columns>
                                                           <TableColumn fx:id="entry" editable="false" prefWidth="120.0" sortable="false" text="物品ID" />
                                                           <TableColumn fx:id="name1" editable="false" prefWidth="260.0" sortable="false" text="物品名称" />
@@ -222,7 +222,7 @@
                                                   </TableView>
                                  </children>
                               </VBox>
-                                          <Pagination fx:id="itemPage" prefHeight="500.0" prefWidth="780.0" />
+                                          <Pagination fx:id="itemPage" prefHeight="500.0" prefWidth="800.0" />
                                     </children>
                                 </VBox>
                             </content>
