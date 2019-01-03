@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -102,6 +103,8 @@ public class MainController implements Initializable {
     private Button searchBtn;
     @FXML
     private Pagination itemPage;
+    @FXML
+    private MenuItem sendMenuItem;
     private boolean firstTime = true;
     private Page<Item> page = new Page<>();
     /* 选项卡2 end */
@@ -143,7 +146,7 @@ public class MainController implements Initializable {
      * 更新游戏角色信息
      */
     public void updateCharacterInfo() {
-        Character character = this.character.getSelectionModel().getSelectedItem();
+        Character character = getSelectedCharacter();
         if (character != null) {
             Character updateCharacter = createUpdateCharacter();
             this.updateBtn.setDisable(true);
@@ -170,7 +173,7 @@ public class MainController implements Initializable {
      * 元宝充值
      */
     public void rechargeYb() {
-        Character character = this.character.getSelectionModel().getSelectedItem();
+        Character character = getSelectedCharacter();
         if (character != null) {
             String yb = substring(this.rechargeYb.getText(), Constants.INT_MAX_LENGTH);
             if (StringUtils.isBlank(yb)) {
@@ -201,7 +204,7 @@ public class MainController implements Initializable {
      * 刷新角色信息
      */
     public void refreshCharacterInfo() {
-        Character character = this.character.getSelectionModel().getSelectedItem();
+        Character character = getSelectedCharacter();
         if (character != null) {
             this.characterId.setText(Objects.toString(character.getCharacterId()));
             this.characterName.setText(character.getCharacterName());
@@ -216,6 +219,7 @@ public class MainController implements Initializable {
             this.zsLevel.setText(Objects.toString(character.getZsLevel()));
             this.whLevel.setText(Objects.toString(character.getWhLevel()));
             this.lianti.setText(Objects.toString(character.getLianti()));
+            this.sendMenuItem.setDisable(false);
         } else {
             this.characterId.setText(null);
             this.characterName.setText(null);
@@ -230,6 +234,7 @@ public class MainController implements Initializable {
             this.zsLevel.setText(null);
             this.whLevel.setText(null);
             this.lianti.setText(null);
+            this.sendMenuItem.setDisable(true);
         }
     }
 
@@ -260,6 +265,19 @@ public class MainController implements Initializable {
     }
 
     /**
+     * 发送物品
+     */
+    public void sendItem() {
+        Item item = this.itemList.getSelectionModel().getSelectedItem();
+        if (item != null) {
+            Character character = getSelectedCharacter();
+            String characterName = character.getCharacterName();
+            String itemName = item.getName1();
+            showDialogTip(Alert.AlertType.INFORMATION, "[" + itemName + "]已成功发送到[" + characterName + "]的包裹中");
+        }
+    }
+
+    /**
      * 设置表格
      */
     private void configureTable() {
@@ -275,6 +293,15 @@ public class MainController implements Initializable {
         this.itemPage.setPageCount(1);
         this.itemPage.setCurrentPageIndex(0);
         this.itemPage.setPageFactory(pageIndex -> createItemListPage(pageIndex));
+    }
+
+    /**
+     * 获取当前选中的游戏角色
+     *
+     * @return
+     */
+    private Character getSelectedCharacter() {
+        return this.character.getSelectionModel().getSelectedItem();
     }
 
     /**

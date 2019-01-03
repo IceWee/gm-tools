@@ -76,3 +76,20 @@
 .table-view .column-header-background .label {
     -fx-text-fill: rgba(0, 0, 0, 0.8);
 }
+
+.context-menu {
+    -fx-background-image: url("../images/coarse_grid.png");
+    -fx-background-repeat: repeat;
+    -fx-background-color: linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
+    linear-gradient(#20262b, #191d22),
+    radial-gradient(center 50% 0%, radius 100%, rgba(114, 131, 148, 0.9), rgba(255, 255, 255, 0));
+}
+
+.menu-item .label {
+    -fx-text-fill: #B8B8B8;
+    -fx-text-fill: linear-gradient(#B8B8B8, #888888);
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: white;
+}

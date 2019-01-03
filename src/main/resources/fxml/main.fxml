@@ -25,15 +25,15 @@
     <children>
         <HBox maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0">
             <children>
-                <TabPane maxHeight="580.0" maxWidth="780.0" minHeight="580.0" minWidth="780.0" prefHeight="580.0" prefWidth="780.0" tabClosingPolicy="UNAVAILABLE">
+                <TabPane maxHeight="619.0" maxWidth="824.0" minHeight="580.0" minWidth="780.0" prefHeight="600.0" prefWidth="822.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                         <Tab text="基本信息">
                             <content>
-                                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+                                <VBox prefHeight="581.0" prefWidth="800.0">
                                     <children>
-                                        <HBox prefHeight="150.0" prefWidth="780.0" spacing="10.0">
+                                        <HBox prefHeight="150.0" prefWidth="780.0" spacing="4.0">
                                             <children>
-                                                <TitledPane collapsible="false" prefHeight="140.0" prefWidth="385.0" text="账号读取">
+                                                <TitledPane collapsible="false" prefHeight="140.0" prefWidth="398.0" text="账号读取">
                                                     <content>
                                                         <GridPane styleClass="def-bg">
                                                             <columnConstraints>
@@ -62,7 +62,7 @@
                                                         </GridPane>
                                                     </content>
                                                 </TitledPane>
-                                                <TitledPane collapsible="false" prefHeight="140.0" prefWidth="385.0" text="元宝充值">
+                                                <TitledPane collapsible="false" prefHeight="140.0" prefWidth="398.0" text="元宝充值">
                                                     <content>
                                                         <GridPane styleClass="def-bg">
                                                             <columnConstraints>
@@ -99,10 +99,10 @@
                                                 </TitledPane>
                                             </children>
                                             <VBox.margin>
-                                                <Insets top="10.0" />
+                                                <Insets top="2.0" />
                                             </VBox.margin>
                                         </HBox>
-                                        <HBox prefHeight="408.0" prefWidth="780.0">
+                                        <HBox prefHeight="422.0" prefWidth="800.0">
                                             <children>
                                                 <TitledPane collapsible="false" lineSpacing="4.0" prefHeight="433.0" prefWidth="805.0" text="角色信息">
                                                     <content>
@@ -210,8 +210,15 @@
                                                       <columns>
                                                           <TableColumn fx:id="entry" editable="false" prefWidth="120.0" sortable="false" text="物品ID" />
                                                           <TableColumn fx:id="name1" editable="false" prefWidth="260.0" sortable="false" text="物品名称" />
-                                                          <TableColumn fx:id="description" editable="false" prefWidth="377.0" sortable="false" text="物品描述" />
+                                                          <TableColumn fx:id="description" editable="false" prefWidth="390.0" sortable="false" text="物品描述" />
                                                       </columns>
+                                       <contextMenu>
+                                          <ContextMenu>
+                                            <items>
+                                              <MenuItem fx:id="sendMenuItem" disable="true" mnemonicParsing="false" onAction="#sendItem" text="发送到背包" />
+                                            </items>
+                                          </ContextMenu>
+                                       </contextMenu>
                                                   </TableView>
                                  </children>
                               </VBox>
@@ -224,9 +231,6 @@
                     </tabs>
                 </TabPane>
             </children>
-            <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-            </padding>
         </HBox>
     </children>
 </AnchorPane>
