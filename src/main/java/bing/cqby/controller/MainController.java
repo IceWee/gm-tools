@@ -14,6 +14,8 @@ import bing.cqby.task.CharacterUpdateTaskService;
 import bing.cqby.task.ItemSearchTaskService;
 import bing.cqby.task.ItemSendTaskService;
 import bing.cqby.task.PlayerItemLoadTaskService;
+import bing.cqby.task.PlayerItemTopTaskService;
+import bing.cqby.task.PlayerItemUpdateTaskService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -144,16 +146,20 @@ public class MainController implements Initializable {
     @FXML
     private ComboBox<ZhulingLevel> modifyEquipmentZhuling;
     @FXML
-    private Button modifyEquipment;
+    private Button modifyEquipmentBtn;
+    @FXML
+    private Button topLevelBtn;
     /* 选项卡3 end */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         log.info("initialize...");
-        initChoiceBoxes();
+        initVIPComboBox();
         configureTable();
         configurePager();
         configureEquipmentTable();
+        initStrengthenBomboBox();
+        initZhulingBomboBox();
     }
 
     /**
@@ -361,16 +367,71 @@ public class MainController implements Initializable {
      * 保存角色装备
      */
     public void saveCharacterEquipment() {
-        Character character = getSelectedCharacter();
-        if (character != null) {
-            Equipment equipment = getSelectedEquipment();
-            if (equipment != null) {
-
-            } else {
-                showDialogTip(Alert.AlertType.WARNING, "请选择要修改的装备");
-            }
+        Equipment equipment = getSelectedEquipment();
+        if (equipment != null) {
+            this.modifyEquipmentBtn.setDisable(true);
+            Equipment updateEquipment = createUpdateEquipment();
+            PlayerItemUpdateTaskService service = new PlayerItemUpdateTaskService(updateEquipment);
+            service.setOnSucceeded(workerStateEvent -> {
+                showDialogTip(Alert.AlertType.INFORMATION, "角色装备修改成功");
+                loadCharacterEquipment();
+                this.modifyEquipmentBtn.setDisable(false);
+            });
+            service.setOnFailed(workerStateEvent -> {
+                Throwable e = workerStateEvent.getSource().getException();
+                errorHandle(e, "角色装备修改失败", this.modifyEquipmentBtn);
+            });
+            service.start();
         } else {
-            showDialogTip(Alert.AlertType.WARNING, "请选择要修改装备的游戏角色");
+            showDialogTip(Alert.AlertType.WARNING, "请选择要修改的装备");
+        }
+    }
+
+    /**
+     * 装备选中事件
+     */
+    public void selectEquipment() {
+        Equipment equipment = getSelectedEquipment();
+        if (equipment != null) {
+            this.modifyEquipmentName.setText(equipment.getEquipmentName());
+            ObservableList<StrengthenLevel> strengthenLevels = this.modifyEquipmentStrength.getItems();
+            StrengthenLevel selectedStrengthenLevel = null;
+            for (StrengthenLevel strengthenLevel : strengthenLevels) {
+                if (Objects.equals(strengthenLevel.getValue(), equipment.getStrengthenLevel())) {
+                    selectedStrengthenLevel = strengthenLevel;
+                    break;
+                }
+            }
+            this.modifyEquipmentStrength.getSelectionModel().select(selectedStrengthenLevel);
+            this.modifyEquipmentZhuling.getSelectionModel().select(equipment.getZhulingLevel());
+            if (equipment.getFlags() == 0) {
+                this.modifyEquipmentBound.setSelected(false);
+            } else {
+                this.modifyEquipmentBound.setSelected(true);
+            }
+        }
+    }
+
+    /**
+     * 一键装备强化和注灵满级
+     */
+    public void oneKeyTopLevel() {
+        if (!this.characterEquipments.getItems().isEmpty()) {
+            this.topLevelBtn.setDisable(true);
+            Character character = getSelectedCharacter();
+            PlayerItemTopTaskService service = new PlayerItemTopTaskService(character.getCharacterId());
+            service.setOnSucceeded(workerStateEvent -> {
+                showDialogTip(Alert.AlertType.INFORMATION, "一键满级操作成功");
+                loadCharacterEquipment();
+                this.topLevelBtn.setDisable(false);
+            });
+            service.setOnFailed(workerStateEvent -> {
+                Throwable e = workerStateEvent.getSource().getException();
+                errorHandle(e, "一键满级操作失败", this.topLevelBtn);
+            });
+            service.start();
+        } else {
+            showDialogTip(Alert.AlertType.WARNING, "请先加载装备列表再操作");
         }
     }
 
@@ -459,11 +520,59 @@ public class MainController implements Initializable {
     }
 
     /**
-     * 初始化下拉列表
+     * 初始化VIP下拉列表
      */
-    private void initChoiceBoxes() {
+    private void initVIPComboBox() {
         List<Integer> vips = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         this.vip.getItems().addAll(vips);
+    }
+
+    /**
+     * 初始化强化等级下拉列表
+     */
+    private void initStrengthenBomboBox() {
+        List<StrengthenLevel> strengthenLevels = new ArrayList<>();
+        strengthenLevels.add(new StrengthenLevel("未强化", 0));
+        StrengthenLevel strengthenLevel;
+        for (int i = 1; i < 13; i++) {
+            strengthenLevel = new StrengthenLevel(String.format("强化%d级", i), i * Constants.STRENGTHEN_UNIT);
+            strengthenLevels.add(strengthenLevel);
+        }
+        this.modifyEquipmentStrength.setItems(FXCollections.observableArrayList(strengthenLevels));
+        this.modifyEquipmentStrength.converterProperty().set(new StringConverter<StrengthenLevel>() {
+            @Override
+            public String toString(StrengthenLevel object) {
+                return object.getLabel();
+            }
+
+            @Override
+            public StrengthenLevel fromString(String string) {
+                return null;
+            }
+        });
+    }
+
+    /**
+     * 初始化注灵等级下拉列表
+     */
+    private void initZhulingBomboBox() {
+        List<ZhulingLevel> zhulingLevels = new ArrayList<>();
+        zhulingLevels.add(new ZhulingLevel("未强化", 0));
+        for (int i = 1; i < 13; i++) {
+            zhulingLevels.add(new ZhulingLevel(String.format("注灵%d级", i), i));
+        }
+        this.modifyEquipmentZhuling.setItems(FXCollections.observableArrayList(zhulingLevels));
+        this.modifyEquipmentZhuling.converterProperty().set(new StringConverter<ZhulingLevel>() {
+            @Override
+            public String toString(ZhulingLevel object) {
+                return object.getLabel();
+            }
+
+            @Override
+            public ZhulingLevel fromString(String string) {
+                return null;
+            }
+        });
     }
 
     /**
@@ -520,7 +629,7 @@ public class MainController implements Initializable {
      */
     private Character createUpdateCharacter() {
         Character character = new Character();
-        Character choice = this.character.getSelectionModel().getSelectedItem();
+        Character choice = getSelectedCharacter();
         character.setAccountId(choice.getAccountId());
         character.setCharacterId(choice.getCharacterId());
         character.setOthers(choice.getOthers());
@@ -536,6 +645,26 @@ public class MainController implements Initializable {
         character.setBoundYb(NumberUtils.toInt(substring(this.boundYb.getText(), Constants.INT_MAX_LENGTH)));
         character.setVip(this.vip.getSelectionModel().getSelectedItem());
         return character;
+    }
+
+    /**
+     * 根据表单参数构造更新装备对象
+     *
+     * @return
+     */
+    private Equipment createUpdateEquipment() {
+        Equipment equipment = new Equipment();
+        Equipment choice = getSelectedEquipment();
+        equipment.setGuid(choice.getGuid());
+        equipment.setFlags(0L);
+        if (this.modifyEquipmentBound.isSelected()) {
+            equipment.setFlags(1L);
+        }
+        StrengthenLevel strengthenLevel = this.modifyEquipmentStrength.getValue();
+        equipment.setStrengthenLevel(strengthenLevel.getValue());
+        ZhulingLevel zhulingLevel = this.modifyEquipmentZhuling.getValue();
+        equipment.setZhulingLevel(zhulingLevel.getValue());
+        return equipment;
     }
 
     private String substring(String string, int maxLength) {

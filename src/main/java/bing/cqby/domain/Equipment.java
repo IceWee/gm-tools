@@ -1,5 +1,6 @@
 package bing.cqby.domain;
 
+import bing.cqby.common.Constants;
 import lombok.Data;
 
 /**
@@ -32,7 +33,7 @@ public class Equipment {
     private String equipmentName;
 
     /**
-     * 强化等级
+     * 强化等级：65537、131074...786444
      */
     private Integer strengthenLevel;
 
@@ -141,11 +142,11 @@ public class Equipment {
         if (strengthenLevel == 0) {
             strengthenText = "未强化";
         } else {
-            int level = strengthenLevel / 65537;
+            int level = strengthenLevel / Constants.STRENGTHEN_UNIT;
             if (level > 12) {
                 level = 12;
             }
-            strengthenText = level + "级";
+            strengthenText = "强化" + level + "级";
         }
         return strengthenText;
     }
@@ -162,7 +163,7 @@ public class Equipment {
             if (zhulingLevel > 12) {
                 zhulingLevel = 12;
             }
-            zhulingText = zhulingLevel + "级";
+            zhulingText = "注灵" + zhulingLevel + "级";
         }
         return zhulingText;
     }

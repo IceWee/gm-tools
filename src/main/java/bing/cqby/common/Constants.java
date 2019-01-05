@@ -14,6 +14,11 @@ public interface Constants {
     int INT_MAX_LENGTH = 9;
 
     /**
+     * 装备强化1级的点数
+     */
+    int STRENGTHEN_UNIT = 65537;
+
+    /**
      * 角色背包
      */
     interface Slot {

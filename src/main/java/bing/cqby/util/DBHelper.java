@@ -198,15 +198,20 @@ public final class DBHelper {
      * 执行SQL
      *
      * @param sql
+     * @param args
      * @throws Exception
      */
-    public void execute(String sql) throws Exception {
+    public void execute(String sql, Object... args) throws Exception {
         log.info("SQL: \r\n{}", sql);
         Connection connection = getConnection();
-        Statement statement = null;
+        PreparedStatement statement = null;
         try {
-            statement = connection.createStatement();
-            statement.execute(sql);
+            statement = connection.prepareStatement(sql);
+            for (int i = 0; i < args.length; i++) {
+                statement.setObject(i + 1, args[i]);
+            }
+            int count = statement.executeUpdate();
+            log.info("count: {}", count);
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
             throw new Exception(e.getMessage(), e);

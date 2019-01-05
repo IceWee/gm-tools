@@ -101,11 +101,45 @@ public class PlayerItemService {
         builder.append(" [game].playeritems.btaoattack zhulingLevel, [game].playeritems.flags");
         builder.append(" FROM [game].playeritems LEFT OUTER JOIN [game].items ON [game].playeritems.entry = [game].items.entry");
         builder.append(" WHERE [game].playeritems.ownerguid = ?");
-        builder.append(" AND [game].playeritems.slot <= 21 AND [game].playeritems.slot NOT IN(13, 19)"); // 13为血符，不能强化不能注灵需排除
+        builder.append(" AND [game].playeritems.slot <= 21 AND [game].playeritems.slot NOT IN(13, 19)"); // 13为血符，19为时装，不能强化不能注灵需排除
         builder.append(" ORDER BY [game].playeritems.slot");
         String sql = SQLUtils.replaceDBNames(builder.toString());
         List<Equipment> equipments = DBHelper.getInstance().query(Equipment.class, sql, new Long[]{characterId});
         return equipments;
+    }
+
+    /**
+     * 更新角色装备信息
+     *
+     * @param equipment
+     * @throws Exception
+     */
+    public void update(Equipment equipment) throws Exception {
+        Object[] args = new Object[]{equipment.getStrengthenLevel(), equipment.getZhulingLevel(), equipment.getFlags(), equipment.getGuid()};
+        StringBuilder builder = new StringBuilder();
+        builder.append("UPDATE [game].playeritems SET");
+        builder.append(" strengthen_level = ?,");
+        builder.append(" btaoattack = ?,");
+        builder.append(" flags = ?");
+        builder.append(" WHERE guid = ?");
+        String sql = SQLUtils.replaceDBNames(builder.toString());
+        DBHelper.getInstance().execute(sql, args);
+    }
+
+    /**
+     * 一键顶级（强化和注灵）
+     *
+     * @param characterId
+     */
+    public void topLevel(Long characterId) throws Exception {
+        Long[] args = new Long[]{characterId};
+        StringBuilder builder = new StringBuilder();
+        builder.append("UPDATE [game].playeritems SET strengthen_level = ").append(Constants.STRENGTHEN_UNIT * 12).append(",");
+        builder.append(" btaoattack = 12");
+        builder.append(" WHERE [game].playeritems.ownerguid = ?");
+        builder.append(" AND [game].playeritems.slot <= 21 AND [game].playeritems.slot NOT IN(13, 19)"); // 13为血符，19为时装，不能强化不能注灵需排除
+        String sql = SQLUtils.replaceDBNames(builder.toString());
+        DBHelper.getInstance().execute(sql, args);
     }
 
     /**
