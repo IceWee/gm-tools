@@ -105,6 +105,7 @@
                             <mainClass>bing.cqby.Main</mainClass>
                         </manifest>
                     </archive>
+                    <outputDirectory>${project.build.directory}/dist</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>

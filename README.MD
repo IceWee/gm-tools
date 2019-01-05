@@ -46,3 +46,12 @@
 
 ### 关于装备注灵
 > 装备最大注灵等级为12级，只有血符不能注灵。注灵字段为【btaoattack】，数字为几代表注灵几级，满级（12）的值为12
+
+### 打包命令
+> Windows exe
+```
+cd gm-tools
+mvn package
+cd target
+javapackager -deploy -native image -outdir build -srcdir dist -appclass bing.cqby.Main -name 传奇霸业GM工具 -outfile gm-tools
+```
