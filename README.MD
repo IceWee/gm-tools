@@ -51,7 +51,7 @@
 > Windows exe
 ```
 cd gm-tools
-mvn package
+mvn clean package
 cd target
-javapackager -deploy -native image -outdir build -srcdir dist -appclass bing.cqby.Main -name 传奇霸业GM工具 -outfile gm-tools
+javapackager -deploy -native image -outdir build -srcdir dist -appclass bing.cqby.Main -name gm-tools -outfile gm-tools
 ```
