@@ -75,6 +75,8 @@ public class MainController implements Initializable {
     @FXML
     private TextField lianti;
     @FXML
+    private TextField chengjiu;
+    @FXML
     private ComboBox<Integer> vip;
     @FXML
     private Button loadBtn;
@@ -219,6 +221,7 @@ public class MainController implements Initializable {
             this.zsLevel.setText(Objects.toString(character.getZsLevel()));
             this.whLevel.setText(Objects.toString(character.getWhLevel()));
             this.lianti.setText(Objects.toString(character.getLianti()));
+            this.chengjiu.setText(Objects.toString(character.getChengjiu()));
             this.sendMenuItem.setDisable(false);
         } else {
             this.characterId.setText(null);
@@ -234,6 +237,7 @@ public class MainController implements Initializable {
             this.zsLevel.setText(null);
             this.whLevel.setText(null);
             this.lianti.setText(null);
+            this.chengjiu.setText(null);
             this.sendMenuItem.setDisable(true);
         }
     }
@@ -412,6 +416,7 @@ public class MainController implements Initializable {
         character.setNgLevel(NumberUtils.toInt(substring(this.ngLevel.getText(), Constants.INT_MAX_LENGTH)));
         character.setWhLevel(NumberUtils.toInt(substring(this.whLevel.getText(), Constants.INT_MAX_LENGTH)));
         character.setLianti(NumberUtils.toInt(substring(this.lianti.getText(), Constants.INT_MAX_LENGTH)));
+        character.setChengjiu(NumberUtils.toInt(substring(this.chengjiu.getText(), Constants.INT_MAX_LENGTH)));
         character.setGold(NumberUtils.toInt(substring(this.gold.getText(), Constants.INT_MAX_LENGTH)));
         character.setBoundGold(NumberUtils.toInt(substring(this.boundGold.getText(), Constants.INT_MAX_LENGTH)));
         character.setYb(NumberUtils.toInt(substring(this.yb.getText(), Constants.INT_MAX_LENGTH)));

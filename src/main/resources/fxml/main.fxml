@@ -171,6 +171,8 @@
                                                                         <Button fx:id="updateBtn" mnemonicParsing="false" onAction="#updateCharacterInfo" prefHeight="48.0" prefWidth="131.0" text="保存修改" />
                                                                     </children>
                                                                 </HBox>
+                                                <Label maxHeight="30.0" maxWidth="85.0" minHeight="30.0" minWidth="85.0" prefHeight="30.0" prefWidth="85.0" text="成就积分:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                <TextField fx:id="chengjiu" maxHeight="30.0" maxWidth="130.0" minHeight="30.0" minWidth="130.0" prefHeight="30.0" prefWidth="130.0" promptText="成就积分" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                                                             </children>
                                                         </GridPane>
                                                     </content>

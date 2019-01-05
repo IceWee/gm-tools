@@ -20,28 +20,69 @@ public class Character {
 
     private String characterName;
 
+    /**
+     * 角色类型：战圣、法神、道尊
+     */
     private String characterType;
 
+    /**
+     * 角色等级
+     */
     private Integer level;
 
+    /**
+     * 内功等级
+     */
     private Integer ngLevel;
 
+    /**
+     * 转生等级
+     */
     private Integer zsLevel;
 
+    /**
+     * 武魂等级
+     */
     private Integer whLevel;
 
+    /**
+     * 金币
+     */
     private Integer gold;
 
+    /**
+     * 绑定金币
+     */
     private Integer boundGold;
 
+    /**
+     * 元宝
+     */
     private Integer yb;
 
+    /**
+     * 绑定元宝
+     */
     private Integer boundYb;
 
+    /**
+     * 炼体值
+     */
     private Integer lianti;
 
+    /**
+     * 成就积分
+     */
+    private Integer chengjiu;
+
+    /**
+     * VIP等级
+     */
     private Integer vip;
 
+    /**
+     * 其他属性集合
+     */
     private String others;
 
     public Integer getVip() {
@@ -72,6 +113,11 @@ public class Character {
     public Integer getBoundYb() {
         boundYb = getCommonMaxNumber(boundYb);
         return boundYb;
+    }
+
+    public Integer getChengjiu() {
+        chengjiu = getCommonMaxNumber(chengjiu);
+        return chengjiu;
     }
 
     /**

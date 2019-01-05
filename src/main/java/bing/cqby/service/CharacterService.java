@@ -47,7 +47,7 @@ public final class CharacterService {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT [game].characters.acct accountId, [game].characters.guid characterId, [game].characters.name characterName, [game].playervip.vip_type vip,");
         builder.append(" (CASE [game].characters.class WHEN 1 THEN '战圣' WHEN 2 THEN '法神' WHEN 3 THEN '道尊' ELSE '未知' END) characterType,");
-        builder.append(" [game].characters.level, [game].characters.honorRolloverTime ngLevel, [game].characters.gold, [game].characters.binggold boundGold,");
+        builder.append(" [game].characters.level, [game].characters.honorRolloverTime ngLevel, [game].characters.gold, [game].characters.binggold boundGold, [game].characters.honorPoints chengjiu,");
         builder.append(" [game].characters.goldmoney yb, [game].characters.binggoldmoney boundYb, [game].characters.actions2 others");
         builder.append(" FROM [game].characters LEFT OUTER JOIN [game].playervip ON [game].characters.guid = [game].playervip.guid");
         QUERY = builder.toString();
@@ -115,6 +115,7 @@ public final class CharacterService {
         builder.append("goldmoney = ").append(character.getYb()).append(", ");
         builder.append("binggoldmoney = ").append(character.getBoundYb()).append(", ");
         builder.append("honorRolloverTime = ").append(character.getNgLevel()).append(", ");
+        builder.append("honorPoints = ").append(character.getChengjiu()).append(", ");
         String actions2 = character.getOthers();
         String[] array = StringUtils.split(actions2, ",");
         // 转生
