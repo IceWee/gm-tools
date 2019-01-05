@@ -1,6 +1,7 @@
 package bing.cqby.service;
 
 import bing.cqby.common.Constants;
+import bing.cqby.domain.Equipment;
 import bing.cqby.domain.Item;
 import bing.cqby.domain.Result;
 import bing.cqby.util.DBHelper;
@@ -85,6 +86,26 @@ public class PlayerItemService {
             result.setSuccess(true);
         }
         return result;
+    }
+
+    /**
+     * 查询角色装备列表
+     *
+     * @param characterId
+     * @return
+     * @throws Exception
+     */
+    public List<Equipment> query(Long characterId) throws Exception {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT [game].playeritems.guid, [game].playeritems.slot, [game].items.name1 equipmentName, [game].playeritems.strengthen_level strengthenLevel,");
+        builder.append(" [game].playeritems.btaoattack zhulingLevel, [game].playeritems.flags");
+        builder.append(" FROM [game].playeritems LEFT OUTER JOIN [game].items ON [game].playeritems.entry = [game].items.entry");
+        builder.append(" WHERE [game].playeritems.ownerguid = ?");
+        builder.append(" AND [game].playeritems.slot <= 21 AND [game].playeritems.slot NOT IN(13, 19)"); // 13为血符，不能强化不能注灵需排除
+        builder.append(" ORDER BY [game].playeritems.slot");
+        String sql = SQLUtils.replaceDBNames(builder.toString());
+        List<Equipment> equipments = DBHelper.getInstance().query(Equipment.class, sql, new Long[]{characterId});
+        return equipments;
     }
 
     /**

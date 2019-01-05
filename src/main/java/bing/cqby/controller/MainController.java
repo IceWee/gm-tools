@@ -2,20 +2,25 @@ package bing.cqby.controller;
 
 import bing.cqby.common.Constants;
 import bing.cqby.domain.Character;
+import bing.cqby.domain.Equipment;
 import bing.cqby.domain.Item;
 import bing.cqby.domain.Page;
 import bing.cqby.domain.Result;
+import bing.cqby.domain.StrengthenLevel;
+import bing.cqby.domain.ZhulingLevel;
 import bing.cqby.task.CharacterLoadTaskService;
 import bing.cqby.task.CharacterRechargeTaskService;
 import bing.cqby.task.CharacterUpdateTaskService;
 import bing.cqby.task.ItemSearchTaskService;
 import bing.cqby.task.ItemSendTaskService;
+import bing.cqby.task.PlayerItemLoadTaskService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Pagination;
@@ -113,12 +118,42 @@ public class MainController implements Initializable {
     private Page<Item> page = new Page<>();
     /* 选项卡2 end */
 
+    /* 选项卡3 begin */
+    @FXML
+    private TextField equipmentCharacter;
+    @FXML
+    private Button loadEquipmentBtn;
+    @FXML
+    private TableView<Equipment> characterEquipments;
+    @FXML
+    private TableColumn<Equipment, String> slotText;
+    @FXML
+    private TableColumn<Equipment, String> equipmentName;
+    @FXML
+    private TableColumn<Equipment, String> strengthenText;
+    @FXML
+    private TableColumn<Equipment, String> zhulingText;
+    @FXML
+    private TableColumn<Equipment, String> isBound;
+    @FXML
+    private TextField modifyEquipmentName;
+    @FXML
+    private CheckBox modifyEquipmentBound;
+    @FXML
+    private ComboBox<StrengthenLevel> modifyEquipmentStrength;
+    @FXML
+    private ComboBox<ZhulingLevel> modifyEquipmentZhuling;
+    @FXML
+    private Button modifyEquipment;
+    /* 选项卡3 end */
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         log.info("initialize...");
         initChoiceBoxes();
         configureTable();
         configurePager();
+        configureEquipmentTable();
     }
 
     /**
@@ -225,6 +260,7 @@ public class MainController implements Initializable {
             this.lianti.setText(Objects.toString(character.getLianti()));
             this.chengjiu.setText(Objects.toString(character.getChengjiu()));
             this.sendMenuItem.setDisable(false);
+            this.equipmentCharacter.setText(character.getCharacterName());
         } else {
             this.characterId.setText(null);
             this.characterName.setText(null);
@@ -241,6 +277,7 @@ public class MainController implements Initializable {
             this.lianti.setText(null);
             this.chengjiu.setText(null);
             this.sendMenuItem.setDisable(true);
+            this.equipmentCharacter.setText(null);
         }
     }
 
@@ -298,6 +335,46 @@ public class MainController implements Initializable {
     }
 
     /**
+     * 加载角色装备
+     */
+    public void loadCharacterEquipment() {
+        Character character = getSelectedCharacter();
+        if (character != null) {
+            this.loadEquipmentBtn.setDisable(true);
+            PlayerItemLoadTaskService service = new PlayerItemLoadTaskService(character.getCharacterId());
+            service.setOnSucceeded(workerStateEvent -> {
+                List<Equipment> equipments = (List<Equipment>) workerStateEvent.getSource().getValue();
+                this.characterEquipments.setItems(FXCollections.observableArrayList(equipments));
+                this.loadEquipmentBtn.setDisable(false);
+            });
+            service.setOnFailed(workerStateEvent -> {
+                Throwable e = workerStateEvent.getSource().getException();
+                errorHandle(e, "角色装备加载失败", this.loadEquipmentBtn);
+            });
+            service.start();
+        } else {
+            showDialogTip(Alert.AlertType.WARNING, "请选择要加载装备的游戏角色");
+        }
+    }
+
+    /**
+     * 保存角色装备
+     */
+    public void saveCharacterEquipment() {
+        Character character = getSelectedCharacter();
+        if (character != null) {
+            Equipment equipment = getSelectedEquipment();
+            if (equipment != null) {
+
+            } else {
+                showDialogTip(Alert.AlertType.WARNING, "请选择要修改的装备");
+            }
+        } else {
+            showDialogTip(Alert.AlertType.WARNING, "请选择要修改装备的游戏角色");
+        }
+    }
+
+    /**
      * 设置表格
      */
     private void configureTable() {
@@ -316,12 +393,32 @@ public class MainController implements Initializable {
     }
 
     /**
+     * 设置角色装备列表
+     */
+    private void configureEquipmentTable() {
+        this.slotText.setCellValueFactory(new PropertyValueFactory<>("slotText"));
+        this.equipmentName.setCellValueFactory(new PropertyValueFactory<>("equipmentName"));
+        this.strengthenText.setCellValueFactory(new PropertyValueFactory<>("strengthenText"));
+        this.zhulingText.setCellValueFactory(new PropertyValueFactory<>("zhulingText"));
+        this.isBound.setCellValueFactory(new PropertyValueFactory<>("isBound"));
+    }
+
+    /**
      * 获取当前选中的游戏角色
      *
      * @return
      */
     private Character getSelectedCharacter() {
         return this.character.getSelectionModel().getSelectedItem();
+    }
+
+    /**
+     * 获取当前选中的装备
+     *
+     * @return
+     */
+    private Equipment getSelectedEquipment() {
+        return this.characterEquipments.getSelectionModel().getSelectedItem();
     }
 
     /**

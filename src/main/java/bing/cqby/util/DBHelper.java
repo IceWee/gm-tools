@@ -96,7 +96,11 @@ public final class DBHelper {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            resultSet = executeQuery(sql, statement, args);
+            statement = connection.prepareStatement(countSQL);
+            for (int i = 0; i < args.length; i++) {
+                statement.setObject(i + 1, args[i]);
+            }
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 count = resultSet.getInt(1);
             }
@@ -162,7 +166,11 @@ public final class DBHelper {
         ResultSet resultSet = null;
         ResultSetMetaData resultSetMetaData;
         try {
-            resultSet = executeQuery(sql, statement, args);
+            statement = connection.prepareStatement(sql);
+            for (int i = 0; i < args.length; i++) {
+                statement.setObject(i + 1, args[i]);
+            }
+            resultSet = statement.executeQuery();
             resultSetMetaData = resultSet.getMetaData();
             int columnCount = resultSetMetaData.getColumnCount();
             Map<String, Object> row;
@@ -289,23 +297,6 @@ public final class DBHelper {
         int pageSize = page.getPageSize();
         builder.append(" LIMIT ").append(rowIndex).append(", ").append(pageSize);
         return builder.toString();
-    }
-
-    /**
-     * 执行SQL
-     *
-     * @param sql
-     * @param statement
-     * @param args
-     * @return
-     * @throws SQLException
-     */
-    private ResultSet executeQuery(String sql, PreparedStatement statement, Object... args) throws SQLException {
-        statement = connection.prepareStatement(sql);
-        for (int i = 0; i < args.length; i++) {
-            statement.setObject(i + 1, args[i]);
-        }
-        return statement.executeQuery();
     }
 
     /**
