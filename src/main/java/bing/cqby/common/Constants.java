@@ -14,6 +14,23 @@ public interface Constants {
     int INT_MAX_LENGTH = 9;
 
     /**
+     * 角色背包
+     */
+    interface Slot {
+
+        /**
+         * 最小背包
+         */
+        int MIN = 23;
+
+        /**
+         * 最大背包
+         */
+        int MAX = 86;
+
+    }
+
+    /**
      * FXML路径
      */
     interface Fxml {

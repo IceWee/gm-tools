@@ -93,15 +93,10 @@ public final class DBHelper {
         int count = 0;
         String countSQL = createCountSQL(sql);
         log.info("sql: \r\n{}", countSQL);
-        Connection connection = getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            statement = connection.prepareStatement(countSQL);
-            for (int i = 0; i < args.length; i++) {
-                statement.setObject(i + 1, args[i]);
-            }
-            resultSet = statement.executeQuery();
+            resultSet = executeQuery(sql, statement, args);
             while (resultSet.next()) {
                 count = resultSet.getInt(1);
             }
@@ -143,19 +138,33 @@ public final class DBHelper {
      */
     public <T> List<T> query(Class<T> clazz, String sql, Object... args) throws Exception {
         log.info("SQL: \r\n{}", sql);
-        Connection connection = getConnection();
+        try {
+            List<Map<String, Object>> rows = query(sql, args);
+            return mapsToBeans(clazz, rows);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new Exception(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 通用查询
+     *
+     * @param sql
+     * @param args
+     * @return
+     * @throws Exception
+     */
+    public List<Map<String, Object>> query(String sql, Object... args) throws Exception {
+        log.info("SQL: \r\n{}", sql);
+        List<Map<String, Object>> rows = new ArrayList<>();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         ResultSetMetaData resultSetMetaData;
         try {
-            statement = connection.prepareStatement(sql);
-            for (int i = 0; i < args.length; i++) {
-                statement.setObject(i + 1, args[i]);
-            }
-            resultSet = statement.executeQuery();
+            resultSet = executeQuery(sql, statement, args);
             resultSetMetaData = resultSet.getMetaData();
             int columnCount = resultSetMetaData.getColumnCount();
-            List<Map<String, Object>> rows = new ArrayList<>();
             Map<String, Object> row;
             String columnAlias;
             Object columnValue;
@@ -168,13 +177,13 @@ public final class DBHelper {
                 }
                 rows.add(row);
             }
-            return mapsToBeans(clazz, rows);
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
             throw new Exception(e.getMessage(), e);
         } finally {
             release(statement, resultSet);
         }
+        return rows;
     }
 
     /**
@@ -232,6 +241,9 @@ public final class DBHelper {
      * @param maps
      * @param <T>
      * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     * @throws NoSuchFieldException
      */
     private <T> List<T> mapsToBeans(Class<T> clazz, List<Map<String, Object>> maps) throws IllegalAccessException, InstantiationException, NoSuchFieldException {
         List<T> list = new ArrayList<>();
@@ -277,6 +289,23 @@ public final class DBHelper {
         int pageSize = page.getPageSize();
         builder.append(" LIMIT ").append(rowIndex).append(", ").append(pageSize);
         return builder.toString();
+    }
+
+    /**
+     * 执行SQL
+     *
+     * @param sql
+     * @param statement
+     * @param args
+     * @return
+     * @throws SQLException
+     */
+    private ResultSet executeQuery(String sql, PreparedStatement statement, Object... args) throws SQLException {
+        statement = connection.prepareStatement(sql);
+        for (int i = 0; i < args.length; i++) {
+            statement.setObject(i + 1, args[i]);
+        }
+        return statement.executeQuery();
     }
 
     /**

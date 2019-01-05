@@ -4,10 +4,12 @@ import bing.cqby.common.Constants;
 import bing.cqby.domain.Character;
 import bing.cqby.domain.Item;
 import bing.cqby.domain.Page;
+import bing.cqby.domain.Result;
 import bing.cqby.task.CharacterLoadTaskService;
 import bing.cqby.task.CharacterRechargeTaskService;
 import bing.cqby.task.CharacterUpdateTaskService;
 import bing.cqby.task.ItemSearchTaskService;
+import bing.cqby.task.ItemSendTaskService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -275,9 +277,23 @@ public class MainController implements Initializable {
         Item item = this.itemList.getSelectionModel().getSelectedItem();
         if (item != null) {
             Character character = getSelectedCharacter();
+            Long characterId = character.getCharacterId();
             String characterName = character.getCharacterName();
             String itemName = item.getName1();
-            showDialogTip(Alert.AlertType.INFORMATION, "[" + itemName + "]已成功发送到[" + characterName + "]的包裹中");
+            ItemSendTaskService service = new ItemSendTaskService(characterId, item);
+            service.setOnSucceeded(workerStateEvent -> {
+                Result result = (Result) workerStateEvent.getSource().getValue();
+                if (result.getSuccess()) {
+                    showDialogTip(Alert.AlertType.INFORMATION, "[" + itemName + "]已成功发送到[" + characterName + "]的包裹中");
+                } else {
+                    showDialogTip(Alert.AlertType.ERROR, "物品发送到背包失败");
+                }
+            });
+            service.setOnFailed(workerStateEvent -> {
+                Throwable e = workerStateEvent.getSource().getException();
+                errorHandle(e, "物品发送到背包失败", null);
+            });
+            service.start();
         }
     }
 
