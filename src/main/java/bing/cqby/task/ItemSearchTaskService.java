@@ -3,10 +3,6 @@ package bing.cqby.task;
 import bing.cqby.domain.Item;
 import bing.cqby.domain.Page;
 import bing.cqby.service.ItemService;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -20,23 +16,12 @@ public final class ItemSearchTaskService extends Service<Void> {
 
     private ItemService itemService = ItemService.getInstance();
 
-    private StringProperty itemProperty = new SimpleStringProperty();
-    private ObjectProperty<Page<Item>> pageProperty = new SimpleObjectProperty<>();
+    private String itemName;
+    private Page<Item> page;
 
-    private final String getItemName() {
-        return itemProperty.get();
-    }
-
-    public final void setItemName(String itemName) {
-        itemProperty.set(itemName);
-    }
-
-    private final Page<Item> getPage() {
-        return pageProperty.get();
-    }
-
-    public final void setPage(Page<Item> page) {
-        pageProperty.set(page);
+    public ItemSearchTaskService(String itemName, Page<Item> page) {
+        this.itemName = itemName;
+        this.page = page;
     }
 
     @Override
@@ -44,7 +29,7 @@ public final class ItemSearchTaskService extends Service<Void> {
         return new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                itemService.query(getPage(), getItemName());
+                itemService.query(page, itemName);
                 return null;
             }
         };

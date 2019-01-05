@@ -2,8 +2,6 @@ package bing.cqby.task;
 
 import bing.cqby.domain.Character;
 import bing.cqby.service.CharacterService;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -19,18 +17,10 @@ public final class CharacterLoadTaskService extends Service<List<Character>> {
 
     private CharacterService characterService = CharacterService.getInstance();
 
-    private StringProperty accountProperty = new SimpleStringProperty();
+    private String account;
 
-    public CharacterLoadTaskService() {
-        super();
-    }
-
-    private final String getAccount() {
-        return accountProperty.get();
-    }
-
-    public final void setAccount(String account) {
-        accountProperty.set(account);
+    public CharacterLoadTaskService(String account) {
+        this.account = account;
     }
 
     @Override
@@ -38,7 +28,7 @@ public final class CharacterLoadTaskService extends Service<List<Character>> {
         return new Task<List<Character>>() {
             @Override
             protected List<Character> call() throws Exception {
-                return characterService.query(getAccount());
+                return characterService.query(account);
             }
         };
     }

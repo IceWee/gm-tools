@@ -169,8 +169,7 @@ public class MainController implements Initializable {
         String account = this.account.getText();
         if (StringUtils.isNotBlank(account)) {
             this.loadBtn.setDisable(true);
-            CharacterLoadTaskService service = new CharacterLoadTaskService();
-            service.setAccount(account);
+            CharacterLoadTaskService service = new CharacterLoadTaskService(account);
             service.setOnSucceeded(workerStateEvent -> {
                 this.characters = (List<Character>) workerStateEvent.getSource().getValue();
                 this.selectedCharacterId = null;
@@ -195,8 +194,7 @@ public class MainController implements Initializable {
         if (character != null) {
             Character updateCharacter = createUpdateCharacter();
             this.updateBtn.setDisable(true);
-            CharacterUpdateTaskService service = new CharacterUpdateTaskService();
-            service.setCharacter(updateCharacter);
+            CharacterUpdateTaskService service = new CharacterUpdateTaskService(updateCharacter);
             service.setOnSucceeded(workerStateEvent -> {
                 this.selectedCharacterId = character.getCharacterId();
                 this.characters = (List<Character>) workerStateEvent.getSource().getValue();
@@ -227,9 +225,7 @@ public class MainController implements Initializable {
             }
             this.rechargeBtn.setDisable(true);
             Integer recharge = NumberUtils.toInt(yb);
-            CharacterRechargeTaskService service = new CharacterRechargeTaskService();
-            service.setCharacter(character);
-            service.setRecharge(recharge);
+            CharacterRechargeTaskService service = new CharacterRechargeTaskService(character, recharge);
             service.setOnSucceeded(workerStateEvent -> {
                 showDialogTip(Alert.AlertType.INFORMATION, "游戏角色元宝充值成功");
                 this.rechargeYb.setText(null);
@@ -297,9 +293,7 @@ public class MainController implements Initializable {
         this.itemPage.setPageCount(1);
         this.itemPage.setCurrentPageIndex(0);
         String itemName = this.searchItemName.getText();
-        ItemSearchTaskService service = new ItemSearchTaskService();
-        service.setItemName(itemName);
-        service.setPage(this.page);
+        ItemSearchTaskService service = new ItemSearchTaskService(itemName, this.page);
         service.setOnSucceeded(workerStateEvent -> {
             ObservableList<Item> items = FXCollections.observableArrayList(this.page.getData());
             this.itemList.setItems(items);
@@ -492,9 +486,7 @@ public class MainController implements Initializable {
         this.page.setPageNo(pageIndex + 1);
         if (!firstTime) {
             String itemName = this.searchItemName.getText();
-            ItemSearchTaskService service = new ItemSearchTaskService();
-            service.setItemName(itemName);
-            service.setPage(this.page);
+            ItemSearchTaskService service = new ItemSearchTaskService(itemName, this.page);
             service.setOnSucceeded(workerStateEvent -> {
                 ObservableList<Item> items = FXCollections.observableArrayList(this.page.getData());
                 this.itemList.setItems(items);

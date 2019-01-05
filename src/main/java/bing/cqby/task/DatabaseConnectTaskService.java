@@ -2,8 +2,6 @@ package bing.cqby.task;
 
 import bing.cqby.domain.Config;
 import bing.cqby.util.DBHelper;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import lombok.extern.slf4j.Slf4j;
@@ -17,18 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class DatabaseConnectTaskService extends Service<Boolean> {
 
-    private ObjectProperty<Config> configProperty = new SimpleObjectProperty<>();
+    private Config config;
 
-    public DatabaseConnectTaskService() {
-        super();
-    }
-
-    private final Config getConfig() {
-        return configProperty.get();
-    }
-
-    public final void setConfig(Config config) {
-        configProperty.setValue(config);
+    public DatabaseConnectTaskService(Config config) {
+        this.config = config;
     }
 
     @Override
@@ -37,7 +27,7 @@ public final class DatabaseConnectTaskService extends Service<Boolean> {
 
             @Override
             protected Boolean call() throws Exception {
-                DBHelper.getInstance().init(getConfig());
+                DBHelper.getInstance().init(config);
                 log.info("数据库连接成功...");
                 return true;
             }

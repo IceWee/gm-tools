@@ -64,8 +64,7 @@ public class ConfigController implements Initializable {
         if (validate()) {
             this.connectBtn.setDisable(true);
             Config config = createConfig();
-            DatabaseConnectTaskService service = new DatabaseConnectTaskService();
-            service.setConfig(config);
+            DatabaseConnectTaskService service = new DatabaseConnectTaskService(config);
             service.setOnSucceeded(workerStateEvent -> {
                 closeSelf();
                 this.connectBtn.setDisable(false);
