@@ -54,4 +54,7 @@ cd gm-tools
 mvn clean package
 cd target
 javapackager -deploy -native image -outdir build -srcdir dist -appclass bing.cqby.Main -name gm-tools -outfile gm-tools
+
+# 不将第三方类库打入同一个jar中
+javapackager -deploy -native image -outdir final -srcdir release -appclass bing.cqby.Main -name gm-tools -outfile gm-tools
 ```

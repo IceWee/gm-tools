@@ -68,8 +68,10 @@
                             <mainClass>bing.cqby.Main</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
+                            <useUniqueVersions>false</useUniqueVersions>
                         </manifest>
                     </archive>
+                    <outputDirectory>${project.build.directory}/release</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -85,7 +87,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>
-                                ${project.build.directory}/lib
+                                ${project.build.directory}/release/lib
                             </outputDirectory>
                         </configuration>
                     </execution>
