@@ -13,6 +13,7 @@ import bing.cqby.task.CharacterRechargeTaskService;
 import bing.cqby.task.CharacterUpdateTaskService;
 import bing.cqby.task.ItemSearchTaskService;
 import bing.cqby.task.ItemSendTaskService;
+import bing.cqby.task.PackageClearTaskService;
 import bing.cqby.task.PlayerItemLoadTaskService;
 import bing.cqby.task.PlayerItemTopTaskService;
 import bing.cqby.task.PlayerItemUpdateTaskService;
@@ -149,6 +150,8 @@ public class MainController implements Initializable {
     private Button modifyEquipmentBtn;
     @FXML
     private Button topLevelBtn;
+    @FXML
+    private Button clearPackageBtn;
     /* 选项卡3 end */
 
     @Override
@@ -427,6 +430,24 @@ public class MainController implements Initializable {
         } else {
             showDialogTip(Alert.AlertType.WARNING, "请先加载装备列表再操作");
         }
+    }
+
+    /**
+     * 清空背包
+     */
+    public void clearPackage() {
+        this.clearPackageBtn.setDisable(true);
+        Character character = getSelectedCharacter();
+        PackageClearTaskService service = new PackageClearTaskService(character.getCharacterId());
+        service.setOnSucceeded(workerStateEvent -> {
+            showDialogTip(Alert.AlertType.INFORMATION, "背包已清空");
+            this.clearPackageBtn.setDisable(false);
+        });
+        service.setOnFailed(workerStateEvent -> {
+            Throwable e = workerStateEvent.getSource().getException();
+            errorHandle(e, "背包清空失败", this.clearPackageBtn);
+        });
+        service.start();
     }
 
     /**

@@ -130,6 +130,7 @@ public class PlayerItemService {
      * 一键顶级（强化和注灵）
      *
      * @param characterId
+     * @throws Exception
      */
     public void topLevel(Long characterId) throws Exception {
         Long[] args = new Long[]{characterId};
@@ -138,6 +139,22 @@ public class PlayerItemService {
         builder.append(" btaoattack = 12");
         builder.append(" WHERE [game].playeritems.ownerguid = ?");
         builder.append(" AND [game].playeritems.slot <= 21 AND [game].playeritems.slot NOT IN(13, 19)"); // 13为血符，19为时装，不能强化不能注灵需排除
+        String sql = SQLUtils.replaceDBNames(builder.toString());
+        DBHelper.getInstance().execute(sql, args);
+    }
+
+    /**
+     * 清空背包
+     *
+     * @param characterId
+     * @throws Exception
+     */
+    public void clearPackage(Long characterId) throws Exception {
+        Long[] args = new Long[]{characterId};
+        StringBuilder builder = new StringBuilder();
+        builder.append("DELETE FROM [game].playeritems");
+        builder.append(" WHERE [game].playeritems.slot > 21");
+        builder.append(" AND [game].playeritems.ownerguid = ?");
         String sql = SQLUtils.replaceDBNames(builder.toString());
         DBHelper.getInstance().execute(sql, args);
     }

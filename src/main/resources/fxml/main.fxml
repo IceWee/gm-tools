@@ -432,7 +432,7 @@
                                 </VBox>
                             </content>
                         </Tab>
-                        <Tab text="背包装备">
+                        <Tab text="装备升级">
                             <content>
                                 <VBox prefHeight="200.0" prefWidth="100.0">
                                     <children>
@@ -440,11 +440,11 @@
                                                   vgap="10.0">
                                             <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0"
-                                                                   prefWidth="170.0"/>
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="302.0" minWidth="10.0"
-                                                                   prefWidth="287.0"/>
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="280.0" minWidth="10.0"
-                                                                   prefWidth="280.0"/>
+                                                                   prefWidth="69.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="392.0" minWidth="10.0"
+                                                                   prefWidth="272.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="400.0" minWidth="10.0"
+                                                                   prefWidth="399.0"/>
                                             </columnConstraints>
                                             <rowConstraints>
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
@@ -467,6 +467,9 @@
                                                                 <Insets/>
                                                             </HBox.margin>
                                                         </Button>
+                                                        <Button fx:id="clearPackageBtn" layoutX="160.0" layoutY="10.0"
+                                                                mnemonicParsing="false" onAction="#clearPackage"
+                                                                prefHeight="30.0" prefWidth="100.0" text="清空背包"/>
                                                     </children>
                                                     <padding>
                                                         <Insets left="30.0"/>
