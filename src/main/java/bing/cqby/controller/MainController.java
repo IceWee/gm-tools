@@ -11,6 +11,7 @@ import bing.cqby.domain.ZhulingLevel;
 import bing.cqby.task.CharacterLoadTaskService;
 import bing.cqby.task.CharacterRechargeTaskService;
 import bing.cqby.task.CharacterUpdateTaskService;
+import bing.cqby.task.ItemBatchSendTaskService;
 import bing.cqby.task.ItemSearchTaskService;
 import bing.cqby.task.ItemSendTaskService;
 import bing.cqby.task.PackageClearTaskService;
@@ -106,6 +107,8 @@ public class MainController implements Initializable {
     @FXML
     private TableView<Item> itemList;
     @FXML
+    private TableColumn<Item, CheckBox> check;
+    @FXML
     private TableColumn<Item, Long> entry;
     @FXML
     private TableColumn<Item, String> name1;
@@ -117,6 +120,8 @@ public class MainController implements Initializable {
     private Pagination itemPage;
     @FXML
     private MenuItem sendMenuItem;
+    @FXML
+    private Button sendItemsBtn;
     private boolean firstTime = true;
     private Page<Item> page = new Page<>();
     /* 选项卡2 end */
@@ -326,7 +331,7 @@ public class MainController implements Initializable {
                 if (result.getSuccess()) {
                     showDialogTip(Alert.AlertType.INFORMATION, "[" + itemName + "]已成功发送到[" + characterName + "]的包裹中");
                 } else {
-                    showDialogTip(Alert.AlertType.ERROR, "物品发送到背包失败");
+                    showDialogTip(Alert.AlertType.ERROR, result.getMessage());
                 }
             });
             service.setOnFailed(workerStateEvent -> {
@@ -451,9 +456,56 @@ public class MainController implements Initializable {
     }
 
     /**
+     * 批量发送物品到背包
+     */
+    public void sendItems() {
+        Character character = getSelectedCharacter();
+        if (character == null) {
+            showDialogTip(Alert.AlertType.WARNING, "请选择接收物品的游戏角色");
+            return;
+        }
+        if (this.itemList.getItems().isEmpty()) {
+            showDialogTip(Alert.AlertType.WARNING, "没有物品可以发送");
+            return;
+        }
+        List<Item> checkedItems = getCheckedItems();
+        if (checkedItems.isEmpty()) {
+            showDialogTip(Alert.AlertType.WARNING, "请选择要发送的物品");
+            return;
+        }
+        this.sendItemsBtn.setDisable(true);
+        ItemBatchSendTaskService service = new ItemBatchSendTaskService(character.getCharacterId(), checkedItems);
+        service.setOnSucceeded(workerStateEvent -> {
+            Result result = (Result) workerStateEvent.getSource().getValue();
+            if (result.getSuccess()) {
+                showDialogTip(Alert.AlertType.INFORMATION, "所选物品已成功发送到[" + character.getCharacterName() + "]的包裹中");
+                this.itemList.getItems().forEach(item -> item.getCheck().setSelected(false));
+            } else {
+                showDialogTip(Alert.AlertType.ERROR, result.getMessage());
+            }
+            this.sendItemsBtn.setDisable(false);
+        });
+        service.setOnFailed(workerStateEvent -> {
+            Throwable e = workerStateEvent.getSource().getException();
+            errorHandle(e, "物品发送到背包失败", this.sendItemsBtn);
+        });
+        service.start();
+    }
+
+    /**
+     * 获取选中的物品列表
+     *
+     * @return
+     */
+    private List<Item> getCheckedItems() {
+        return this.itemList.getItems().filtered(item -> item.getCheck().isSelected());
+    }
+
+    /**
      * 设置表格
      */
     private void configureTable() {
+        this.check.setCellValueFactory(new PropertyValueFactory<>("check"));
         this.entry.setCellValueFactory(new PropertyValueFactory<>("entry"));
         this.name1.setCellValueFactory(new PropertyValueFactory<>("name1"));
         this.description.setCellValueFactory(new PropertyValueFactory<>("description"));

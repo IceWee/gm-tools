@@ -34,6 +34,10 @@
     -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.6), 0, 0.0, 0, 1);
 }
 
+.check-box {
+    -fx-alignment: center;
+}
+
 .button {
     -fx-background-color: rgba(255, 255, 255, 0.08),
     rgba(0, 0, 0, 0.8),
@@ -119,18 +123,22 @@
 }
 
 .tab .tab-label {
-    -fx-alignment: CENTER;
+    -fx-alignment: center;
     -fx-text-fill: #828282;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
 
 .tab:selected .tab-label {
-    -fx-alignment: CENTER;
+    -fx-alignment: center;
     -fx-text-fill: #FFFFFF;
     -fx-accent: white;
 }
 
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
     -fx-border-width: 0;
+}
+
+.text-center {
+    -fx-alignment: center;
 }

@@ -220,6 +220,39 @@ public final class DBHelper {
         }
     }
 
+    /**
+     * 批量执行SQL
+     *
+     * @param sql
+     * @param args
+     * @throws Exception
+     */
+    public void executeBatch(String sql, List<Object[]> args) throws Exception {
+        log.info("SQL: \r\n{}", sql);
+        Connection connection = getConnection();
+        PreparedStatement statement = null;
+        try {
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(sql);
+            for (Object[] params : args) {
+                for (int i = 0; i < params.length; i++) {
+                    statement.setObject(i + 1, params[i]);
+                }
+                statement.addBatch();
+            }
+            int[] count = statement.executeBatch();
+            log.info("count: {}", count.length);
+            connection.commit();
+        } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+            connection.rollback();
+            throw new Exception(e.getMessage(), e);
+        } finally {
+            release(statement, null);
+            connection.setAutoCommit(true);
+        }
+    }
+
     public String getLoginDB() {
         return loginDB;
     }

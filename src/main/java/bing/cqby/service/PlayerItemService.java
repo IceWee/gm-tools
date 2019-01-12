@@ -39,9 +39,25 @@ public class PlayerItemService {
      *
      * @param characterId
      * @return 返回null时说明空间已满
+     * @throws Exception
      */
     public Integer getOneEmptySlot(Long characterId) throws Exception {
         Integer slot = null;
+        List<Integer> allSlots = getEmptySlots(characterId);
+        if (!allSlots.isEmpty()) {
+            slot = allSlots.get(0);
+        }
+        return slot;
+    }
+
+    /**
+     * 获取角色全部未使用背包空间
+     *
+     * @param characterId
+     * @return
+     * @throws Exception
+     */
+    public List<Integer> getEmptySlots(Long characterId) throws Exception {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT slot FROM [game].playeritems");
         builder.append(" WHERE ownerguid = ? AND slot > 22"); // 空闲背包空间从23开始
@@ -54,10 +70,7 @@ public class PlayerItemService {
         }).collect(Collectors.toList());
         List<Integer> allSlots = getSlots();
         allSlots.removeAll(usedSlots);
-        if (!allSlots.isEmpty()) {
-            slot = allSlots.get(0);
-        }
-        return slot;
+        return allSlots;
     }
 
     /**
@@ -66,6 +79,7 @@ public class PlayerItemService {
      * @param characterId
      * @param item
      * @return
+     * @throws Exception
      */
     public Result sendItem(Long characterId, Item item) throws Exception {
         Result result = new Result();
@@ -83,6 +97,43 @@ public class PlayerItemService {
             builder.append("1, 0, 0, 0, 0, 0, 0, 0, 0, 0, '')");
             String sql = SQLUtils.replaceDBNames(builder.toString());
             DBHelper.getInstance().execute(sql);
+            result.setSuccess(true);
+        }
+        return result;
+    }
+
+    /**
+     * 批量发送物品到角色背包
+     *
+     * @param characterId
+     * @param items
+     * @return
+     * @throws Exception
+     */
+    public Result sendItems(Long characterId, List<Item> items) throws Exception {
+        Result result = new Result();
+        int itemCount = items.size();
+        List<Integer> emptySlots = getEmptySlots(characterId);
+        if (itemCount > emptySlots.size()) {
+            result.setSuccess(false);
+            result.setMessage("物品发送失败，背包空间不足，剩余空间为：" + emptySlots.size());
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("INSERT [game].playeritems(ownerguid, entry, slot, count, randomsuffix, enchantments, strengthen_level, lucy, btaoattack, bhysicsattack, bspellattack, bhysicsguard, bspellguard, text)");
+            builder.append(" VALUES(?, ?, ?, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, '')");
+            List<Object[]> args = new ArrayList<>();
+            Item item;
+            for (int i = 0; i < items.size(); i++) {
+                item = items.get(i);
+                Integer slot = emptySlots.get(i);
+                Object[] params = new Object[3];
+                params[0] = characterId;
+                params[1] = item.getEntry();
+                params[2] = slot;
+                args.add(params);
+            }
+            String sql = SQLUtils.replaceDBNames(builder.toString());
+            DBHelper.getInstance().executeBatch(sql, args);
             result.setSuccess(true);
         }
         return result;

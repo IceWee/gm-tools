@@ -1,5 +1,6 @@
 package bing.cqby.domain;
 
+import javafx.scene.control.CheckBox;
 import lombok.Data;
 
 /**
@@ -10,6 +11,8 @@ import lombok.Data;
  */
 @Data
 public class Item {
+
+    private CheckBox check = new CheckBox();
 
     private Long entry;
 
