@@ -18,6 +18,7 @@ import bing.cqby.task.ItemSendTaskService;
 import bing.cqby.task.PackageClearTaskService;
 import bing.cqby.task.PlayerItemEquipTaskService;
 import bing.cqby.task.PlayerItemLoadTaskService;
+import bing.cqby.task.PlayerItemTakeDownTaskService;
 import bing.cqby.task.PlayerItemTopTaskService;
 import bing.cqby.task.PlayerItemUpdateTaskService;
 import javafx.collections.FXCollections;
@@ -164,6 +165,8 @@ public class MainController implements Initializable {
     private ContextMenu equipmentMenu;
     @FXML
     private MenuItem equipMenuItem;
+    @FXML
+    private MenuItem takeDownMenuItem;
     /* 选项卡3 end */
 
     @Override
@@ -351,19 +354,37 @@ public class MainController implements Initializable {
     }
 
     /**
-     * 装备物品
+     * 穿戴物品
      */
     public void equipItem() {
         Equipment equipment = getSelectedEquipment();
         Character character = getSelectedCharacter();
         PlayerItemEquipTaskService service = new PlayerItemEquipTaskService(character.getCharacterId(), equipment);
         service.setOnSucceeded(workerStateEvent -> {
-            showDialogTip(Alert.AlertType.INFORMATION, "装备成功");
+            showDialogTip(Alert.AlertType.INFORMATION, "角色装备穿戴成功");
             loadCharacterEquipment();
         });
         service.setOnFailed(workerStateEvent -> {
             Throwable e = workerStateEvent.getSource().getException();
             errorHandle(e, "角色装备穿戴失败", null);
+        });
+        service.start();
+    }
+
+    /**
+     * 取下装备
+     */
+    public void takeDownItem() {
+        Equipment equipment = getSelectedEquipment();
+        Character character = getSelectedCharacter();
+        PlayerItemTakeDownTaskService service = new PlayerItemTakeDownTaskService(character.getCharacterId(), equipment);
+        service.setOnSucceeded(workerStateEvent -> {
+            showDialogTip(Alert.AlertType.INFORMATION, "角色装备取下成功");
+            loadCharacterEquipment();
+        });
+        service.setOnFailed(workerStateEvent -> {
+            Throwable e = workerStateEvent.getSource().getException();
+            errorHandle(e, "角色装备取下失败", null);
         });
         service.start();
     }
@@ -569,50 +590,80 @@ public class MainController implements Initializable {
      */
     private void configureEquipmentMenu() {
         this.equipmentMenu.setOnShowing(event -> {
-            // 未选择游戏角色
-            Character character = getSelectedCharacter();
-            if (character == null) {
-                this.equipMenuItem.setDisable(true);
-                return;
-            }
-            // 未选择装备
-            Equipment selectedEquipment = getSelectedEquipment();
-            if (selectedEquipment == null) {
-                this.equipMenuItem.setDisable(true);
-                return;
-            }
-            // 非装备物品不能穿戴
-            EquipmentType equipmentType = selectedEquipment.getType();
-            if (EquipmentType.OTHER == equipmentType) {
-                this.equipMenuItem.setDisable(true);
-                return;
-            }
-            // 背包中的装备才可以穿戴
-            Integer slot = selectedEquipment.getSlot();
-            if (slot < Constants.Slot.MIN) {
-                this.equipMenuItem.setDisable(true);
-                return;
-            }
-            // 性别检查
-            Integer equipmentGender = selectedEquipment.getAllowableRace();
-            if (Constants.ZERO != equipmentGender) { // 非全性别通用
-                Long characterGender = character.getGender();
-                if (!Objects.equals(characterGender, equipmentGender)) {
-                    this.equipMenuItem.setDisable(true);
-                    return;
-                }
-            }
-            // 职业检查
-            Integer equipmentProfession = selectedEquipment.getAllowableClass();
-            if (Constants.ZERO != equipmentProfession) { // 非全职业通用
-                Integer characterProfession = character.getProfession();
-                if (!Objects.equals(characterProfession, equipmentProfession)) {
-                    this.equipMenuItem.setDisable(true);
-                    return;
-                }
-            }
-            this.equipMenuItem.setDisable(false);
+            boolean enable = equipMenuEnable();
+            this.equipMenuItem.setDisable(!enable);
+            enable = takeDownMenuEnable();
+            this.takeDownMenuItem.setDisable(!enable);
         });
+    }
+
+    /**
+     * 穿戴装备右键菜单是否可用
+     *
+     * @return
+     */
+    private boolean equipMenuEnable() {
+        // 未选择游戏角色
+        Character character = getSelectedCharacter();
+        if (character == null) {
+            return false;
+        }
+        // 未选择装备
+        Equipment selectedEquipment = getSelectedEquipment();
+        if (selectedEquipment == null) {
+            return false;
+        }
+        // 已穿戴的物品不能再次穿戴
+        Integer slot = selectedEquipment.getSlot();
+        if (slot < Constants.Slot.MIN) {
+            return false;
+        }
+        // 非装备物品不能穿戴
+        EquipmentType equipmentType = selectedEquipment.getType();
+        if (EquipmentType.OTHER == equipmentType) {
+            return false;
+        }
+        // 性别检查
+        Integer equipmentGender = selectedEquipment.getAllowableRace();
+        if (Constants.ZERO != equipmentGender) { // 非全性别通用
+            Long characterGender = character.getGender();
+            if (equipmentGender != characterGender.intValue()) {
+                return false;
+            }
+        }
+        // 职业检查
+        Integer equipmentProfession = selectedEquipment.getAllowableClass();
+        if (Constants.ZERO != equipmentProfession) { // 非全职业通用
+            Integer characterProfession = character.getProfession();
+            if (equipmentProfession != characterProfession) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 取下装备右键菜单是否可用
+     *
+     * @return
+     */
+    private boolean takeDownMenuEnable() {
+        // 未选择游戏角色
+        Character character = getSelectedCharacter();
+        if (character == null) {
+            return false;
+        }
+        // 未选择装备
+        Equipment selectedEquipment = getSelectedEquipment();
+        if (selectedEquipment == null) {
+            return false;
+        }
+        // 只有穿戴的物品才能取下
+        Integer slot = selectedEquipment.getSlot();
+        if (slot > Constants.Slot.MIN) {
+            return false;
+        }
+        return true;
     }
 
     /**

@@ -255,6 +255,31 @@ public class PlayerItemService {
     }
 
     /**
+     * 取下装备, 当背包满时无法取下
+     *
+     * @param characterId
+     * @param equipment
+     * @return
+     * @throws Exception
+     */
+    public Result takeDown(Long characterId, Equipment equipment) throws Exception {
+        Result result = new Result();
+        Integer slot = getOneEmptySlot(characterId);
+        if (slot != null) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("UPDATE [game].playeritems SET slot = ? WHERE [game].playeritems.guid = ?");
+            String sql = SQLUtils.replaceDBNames(builder.toString());
+            Object[] args = new Object[]{slot, equipment.getGuid()};
+            DBHelper.getInstance().execute(sql, args);
+            result.setSuccess(true);
+        } else {
+            result.setSuccess(false);
+            result.setMessage("背包已满无法取下装备");
+        }
+        return result;
+    }
+
+    /**
      * 获取制定位置的装备ID
      *
      * @param characterId
