@@ -1,6 +1,7 @@
 package bing.cqby.service;
 
 import bing.cqby.common.Constants;
+import bing.cqby.common.EquipmentType;
 import bing.cqby.domain.Equipment;
 import bing.cqby.domain.Item;
 import bing.cqby.domain.Result;
@@ -149,10 +150,10 @@ public class PlayerItemService {
     public List<Equipment> query(Long characterId) throws Exception {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT [game].playeritems.guid, [game].playeritems.slot, [game].items.name1 equipmentName, [game].playeritems.strengthen_level strengthenLevel,");
-        builder.append(" [game].playeritems.btaoattack zhulingLevel, [game].playeritems.flags");
+        builder.append(" [game].playeritems.btaoattack zhulingLevel, [game].playeritems.flags, [game].items.class clazz, [game].items.subclass subClass,");
+        builder.append(" [game].items.allowableclass allowableClass, [game].items.allowablerace allowableRace, [game].items.inventorytype inventoryType");
         builder.append(" FROM [game].playeritems LEFT OUTER JOIN [game].items ON [game].playeritems.entry = [game].items.entry");
         builder.append(" WHERE [game].playeritems.ownerguid = ?");
-        builder.append(" AND [game].playeritems.slot <= 21 AND [game].playeritems.slot NOT IN(13, 19)"); // 13为血符，19为时装，不能强化不能注灵需排除
         builder.append(" ORDER BY [game].playeritems.slot");
         String sql = SQLUtils.replaceDBNames(builder.toString());
         List<Equipment> equipments = DBHelper.getInstance().query(Equipment.class, sql, new Long[]{characterId});
@@ -208,6 +209,73 @@ public class PlayerItemService {
         builder.append(" AND [game].playeritems.ownerguid = ?");
         String sql = SQLUtils.replaceDBNames(builder.toString());
         DBHelper.getInstance().execute(sql, args);
+    }
+
+    /**
+     * 穿戴装备
+     * 手镯和戒指比较特殊，优先穿戴到未戴的位置上，如果都有则戴在左侧
+     *
+     * @param characterId
+     * @param equipment
+     */
+    public void equip(Long characterId, Equipment equipment) throws Exception {
+        Integer slot = equipment.getSlotByType();
+        Long guid = getEquipmentGuid(characterId, slot);
+        EquipmentType type = equipment.getType();
+        if (EquipmentType.BRACELET == type) { // 手镯
+            slot = Constants.EquipmentSlot.BRACELET_LEFT; // 检查左手镯是否佩戴
+            guid = getEquipmentGuid(characterId, slot);
+            if (guid != null) {
+                slot = Constants.EquipmentSlot.BRACELET_RIGHT; // 检查右手镯是否佩戴
+                guid = getEquipmentGuid(characterId, slot);
+            }
+        } else if (EquipmentType.RING == type) { // 戒指
+            slot = Constants.EquipmentSlot.RING_LEFT; // 检查左戒指是否佩戴
+            guid = getEquipmentGuid(characterId, slot);
+            if (guid != null) {
+                slot = Constants.EquipmentSlot.RING_RIGHT; // 检查右戒指是否佩戴
+                guid = getEquipmentGuid(characterId, slot);
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append("UPDATE [game].playeritems SET slot = ? WHERE [game].playeritems.guid = ?");
+        String sql = SQLUtils.replaceDBNames(builder.toString());
+        List<Object[]> args = new ArrayList<>();
+        Object[] params = new Object[2];
+        params[0] = slot;
+        params[1] = equipment.getGuid();
+        args.add(params);
+        if (guid != null) { // 已戴装备则和当前装备的slot互换
+            params = new Object[2];
+            params[0] = equipment.getSlot();
+            params[1] = guid;
+            args.add(params);
+        }
+        DBHelper.getInstance().executeBatch(sql, args);
+    }
+
+    /**
+     * 获取制定位置的装备ID
+     *
+     * @param characterId
+     * @param slot
+     * @return 如果装备位置未戴任何装备则返回NULL
+     * @throws Exception
+     */
+    private Long getEquipmentGuid(Long characterId, Integer slot) throws Exception {
+        Long guid = null;
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT [game].playeritems.guid");
+        builder.append(" FROM [game].playeritems");
+        builder.append(" WHERE [game].playeritems.ownerguid = ?");
+        builder.append(" AND slot = ?");
+        String sql = SQLUtils.replaceDBNames(builder.toString());
+        List<Map<String, Object>> list = DBHelper.getInstance().query(sql, new Object[]{characterId, slot});
+        if (!list.isEmpty()) {
+            Map<String, Object> map = list.get(0);
+            guid = NumberUtils.toLong(Objects.toString(map.get("guid")));
+        }
+        return guid;
     }
 
     /**

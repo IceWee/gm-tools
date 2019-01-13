@@ -85,6 +85,16 @@ public class Character {
      */
     private String others;
 
+    /**
+     * 性别
+     */
+    private Long gender;
+
+    /**
+     * 职业
+     */
+    private Integer profession;
+
     public Integer getVip() {
         if (vip == null) {
             vip = 1;
@@ -227,4 +237,22 @@ public class Character {
         }
     }
 
+    /**
+     * 获取角色类型显示文字
+     *
+     * @return
+     */
+    public String getCharacterType() {
+        switch (profession) {
+            case Constants.Profession.WARRIOR:
+                characterType = "战圣";
+                break;
+            case Constants.Profession.ENCHANTER:
+                characterType = "法神";
+                break;
+            case Constants.Profession.TAOIST_PRIEST:
+                characterType = "道尊";
+        }
+        return characterType;
+    }
 }

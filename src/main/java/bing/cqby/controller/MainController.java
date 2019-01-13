@@ -1,6 +1,7 @@
 package bing.cqby.controller;
 
 import bing.cqby.common.Constants;
+import bing.cqby.common.EquipmentType;
 import bing.cqby.domain.Character;
 import bing.cqby.domain.Equipment;
 import bing.cqby.domain.Item;
@@ -15,6 +16,7 @@ import bing.cqby.task.ItemBatchSendTaskService;
 import bing.cqby.task.ItemSearchTaskService;
 import bing.cqby.task.ItemSendTaskService;
 import bing.cqby.task.PackageClearTaskService;
+import bing.cqby.task.PlayerItemEquipTaskService;
 import bing.cqby.task.PlayerItemLoadTaskService;
 import bing.cqby.task.PlayerItemTopTaskService;
 import bing.cqby.task.PlayerItemUpdateTaskService;
@@ -26,6 +28,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
@@ -58,7 +61,7 @@ public class MainController implements Initializable {
     @FXML
     private TextField account;
     @FXML
-    private ComboBox<Character> character;
+    private ComboBox<Character> characterComboBox;
     @FXML
     private TextField rechargeYb;
     @FXML
@@ -157,17 +160,22 @@ public class MainController implements Initializable {
     private Button topLevelBtn;
     @FXML
     private Button clearPackageBtn;
+    @FXML
+    private ContextMenu equipmentMenu;
+    @FXML
+    private MenuItem equipMenuItem;
     /* 选项卡3 end */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         log.info("initialize...");
         initVIPComboBox();
-        configureTable();
+        configureItemTable();
         configurePager();
         configureEquipmentTable();
-        initStrengthenBomboBox();
-        initZhulingBomboBox();
+        initStrengthenComboBox();
+        initZhulingComboBox();
+        configureEquipmentMenu();
     }
 
     /**
@@ -343,6 +351,24 @@ public class MainController implements Initializable {
     }
 
     /**
+     * 装备物品
+     */
+    public void equipItem() {
+        Equipment equipment = getSelectedEquipment();
+        Character character = getSelectedCharacter();
+        PlayerItemEquipTaskService service = new PlayerItemEquipTaskService(character.getCharacterId(), equipment);
+        service.setOnSucceeded(workerStateEvent -> {
+            showDialogTip(Alert.AlertType.INFORMATION, "装备成功");
+            loadCharacterEquipment();
+        });
+        service.setOnFailed(workerStateEvent -> {
+            Throwable e = workerStateEvent.getSource().getException();
+            errorHandle(e, "角色装备穿戴失败", null);
+        });
+        service.start();
+    }
+
+    /**
      * 加载角色装备
      */
     public void loadCharacterEquipment() {
@@ -366,24 +392,26 @@ public class MainController implements Initializable {
     }
 
     /**
-     * 保存角色装备
+     * 升级角色装备
      */
-    public void saveCharacterEquipment() {
+    public void upgradeCharacterEquipment() {
         Equipment equipment = getSelectedEquipment();
         if (equipment != null) {
-            this.modifyEquipmentBtn.setDisable(true);
-            Equipment updateEquipment = createUpdateEquipment();
-            PlayerItemUpdateTaskService service = new PlayerItemUpdateTaskService(updateEquipment);
-            service.setOnSucceeded(workerStateEvent -> {
-                showDialogTip(Alert.AlertType.INFORMATION, "角色装备修改成功");
-                loadCharacterEquipment();
-                this.modifyEquipmentBtn.setDisable(false);
-            });
-            service.setOnFailed(workerStateEvent -> {
-                Throwable e = workerStateEvent.getSource().getException();
-                errorHandle(e, "角色装备修改失败", this.modifyEquipmentBtn);
-            });
-            service.start();
+            if (equipment.getSlot() < Constants.Slot.MIN) {
+                this.modifyEquipmentBtn.setDisable(true);
+                Equipment updateEquipment = createUpdateEquipment();
+                PlayerItemUpdateTaskService service = new PlayerItemUpdateTaskService(updateEquipment);
+                service.setOnSucceeded(workerStateEvent -> {
+                    showDialogTip(Alert.AlertType.INFORMATION, "角色装备修改成功");
+                    loadCharacterEquipment();
+                    this.modifyEquipmentBtn.setDisable(false);
+                });
+                service.setOnFailed(workerStateEvent -> {
+                    Throwable e = workerStateEvent.getSource().getException();
+                    errorHandle(e, "角色装备修改失败", this.modifyEquipmentBtn);
+                });
+                service.start();
+            }
         } else {
             showDialogTip(Alert.AlertType.WARNING, "请选择要修改的装备");
         }
@@ -410,6 +438,11 @@ public class MainController implements Initializable {
                 this.modifyEquipmentBound.setSelected(false);
             } else {
                 this.modifyEquipmentBound.setSelected(true);
+            }
+            if (equipment.getSlot() < Constants.Slot.MIN) {
+                this.modifyEquipmentBtn.setDisable(false);
+            } else {
+                this.modifyEquipmentBtn.setDisable(true);
             }
         }
     }
@@ -504,7 +537,7 @@ public class MainController implements Initializable {
     /**
      * 设置表格
      */
-    private void configureTable() {
+    private void configureItemTable() {
         this.check.setCellValueFactory(new PropertyValueFactory<>("check"));
         this.entry.setCellValueFactory(new PropertyValueFactory<>("entry"));
         this.name1.setCellValueFactory(new PropertyValueFactory<>("name1"));
@@ -532,12 +565,63 @@ public class MainController implements Initializable {
     }
 
     /**
+     * 设置装备右键菜单
+     */
+    private void configureEquipmentMenu() {
+        this.equipmentMenu.setOnShowing(event -> {
+            // 未选择游戏角色
+            Character character = getSelectedCharacter();
+            if (character == null) {
+                this.equipMenuItem.setDisable(true);
+                return;
+            }
+            // 未选择装备
+            Equipment selectedEquipment = getSelectedEquipment();
+            if (selectedEquipment == null) {
+                this.equipMenuItem.setDisable(true);
+                return;
+            }
+            // 非装备物品不能穿戴
+            EquipmentType equipmentType = selectedEquipment.getType();
+            if (EquipmentType.OTHER == equipmentType) {
+                this.equipMenuItem.setDisable(true);
+                return;
+            }
+            // 背包中的装备才可以穿戴
+            Integer slot = selectedEquipment.getSlot();
+            if (slot < Constants.Slot.MIN) {
+                this.equipMenuItem.setDisable(true);
+                return;
+            }
+            // 性别检查
+            Integer equipmentGender = selectedEquipment.getAllowableRace();
+            if (Constants.ZERO != equipmentGender) { // 非全性别通用
+                Long characterGender = character.getGender();
+                if (!Objects.equals(characterGender, equipmentGender)) {
+                    this.equipMenuItem.setDisable(true);
+                    return;
+                }
+            }
+            // 职业检查
+            Integer equipmentProfession = selectedEquipment.getAllowableClass();
+            if (Constants.ZERO != equipmentProfession) { // 非全职业通用
+                Integer characterProfession = character.getProfession();
+                if (!Objects.equals(characterProfession, equipmentProfession)) {
+                    this.equipMenuItem.setDisable(true);
+                    return;
+                }
+            }
+            this.equipMenuItem.setDisable(false);
+        });
+    }
+
+    /**
      * 获取当前选中的游戏角色
      *
      * @return
      */
     private Character getSelectedCharacter() {
-        return this.character.getSelectionModel().getSelectedItem();
+        return this.characterComboBox.getSelectionModel().getSelectedItem();
     }
 
     /**
@@ -595,7 +679,7 @@ public class MainController implements Initializable {
     /**
      * 初始化强化等级下拉列表
      */
-    private void initStrengthenBomboBox() {
+    private void initStrengthenComboBox() {
         List<StrengthenLevel> strengthenLevels = new ArrayList<>();
         strengthenLevels.add(new StrengthenLevel("未强化", 0));
         StrengthenLevel strengthenLevel;
@@ -620,7 +704,7 @@ public class MainController implements Initializable {
     /**
      * 初始化注灵等级下拉列表
      */
-    private void initZhulingBomboBox() {
+    private void initZhulingComboBox() {
         List<ZhulingLevel> zhulingLevels = new ArrayList<>();
         zhulingLevels.add(new ZhulingLevel("未强化", 0));
         for (int i = 1; i < 13; i++) {
@@ -644,14 +728,14 @@ public class MainController implements Initializable {
      * 加载游戏角色下拉列表
      */
     private void loadCharacter() {
-        this.character.getItems().clear();
+        this.characterComboBox.getItems().clear();
         if (this.characters.isEmpty()) {
             showDialogTip(Alert.AlertType.WARNING, "未查询倒任何游戏角色信息");
             refreshCharacterInfo();
             return;
         }
-        this.character.getItems().addAll(this.characters);
-        this.character.converterProperty().set(new StringConverter<Character>() {
+        this.characterComboBox.getItems().addAll(this.characters);
+        this.characterComboBox.converterProperty().set(new StringConverter<Character>() {
             @Override
             public String toString(Character object) {
                 return object.getCharacterName();
@@ -663,7 +747,7 @@ public class MainController implements Initializable {
             }
         });
         if (this.selectedCharacterId == null) {
-            this.character.getSelectionModel().selectFirst();
+            this.characterComboBox.getSelectionModel().selectFirst();
         } else {
             selectCharacter(selectedCharacterId);
         }
@@ -676,7 +760,7 @@ public class MainController implements Initializable {
      * @param characterId
      */
     private void selectCharacter(Long characterId) {
-        ObservableList<Character> items = this.character.getItems();
+        ObservableList<Character> items = this.characterComboBox.getItems();
         Character character = null;
         for (Character item : items) {
             if (Objects.equals(item.getCharacterId(), characterId)) {
@@ -684,7 +768,7 @@ public class MainController implements Initializable {
                 break;
             }
         }
-        this.character.getSelectionModel().select(character);
+        this.characterComboBox.getSelectionModel().select(character);
     }
 
     /**

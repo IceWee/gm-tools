@@ -19,6 +19,11 @@ public interface Constants {
     int STRENGTHEN_UNIT = 65537;
 
     /**
+     * 0
+     */
+    int ZERO = 0;
+
+    /**
      * 角色背包
      */
     interface Slot {
@@ -136,6 +141,157 @@ public interface Constants {
          * 一般常用
          */
         int COMMON = 1000000000;
+
+    }
+
+    /**
+     * 装备位置
+     */
+    interface EquipmentSlot {
+
+        /**
+         * 头盔
+         */
+        int HELM = 0;
+
+        /**
+         * 项链
+         */
+        int NECKLACE = 1;
+
+        /**
+         * 左手镯
+         */
+        int BRACELET_LEFT = 2;
+
+        /**
+         * 右手镯
+         */
+        int BRACELET_RIGHT = 3;
+
+        /**
+         * 左戒指
+         */
+        int RING_LEFT = 4;
+
+        /**
+         * 右戒指
+         */
+        int RING_RIGHT = 5;
+
+        /**
+         * 腰带
+         */
+        int BELT = 6;
+
+        /**
+         * 靴子
+         */
+        int BOOTS = 7;
+
+        /**
+         * 武器
+         */
+        int WEAPON = 8;
+
+        /**
+         * 盔甲
+         */
+        int ARMOR = 9;
+
+        /**
+         * 勋章
+         */
+        int MEDAL = 10;
+
+        /**
+         * 护盾
+         */
+        int SHIELD = 11;
+
+        /**
+         * 宝石
+         */
+        int GEMSTONE = 12;
+
+        /**
+         * 血符
+         */
+        int BLOOD_SIGN = 13;
+
+        /**
+         * 魂珠
+         */
+        int SOUL_BEAD = 14;
+
+        /**
+         * 面甲
+         */
+        int VIZARD = 15;
+
+        /**
+         * 吊坠
+         */
+        int PENDANT = 16;
+
+        /**
+         * 护肩
+         */
+        int SHOULDER_PAD = 17;
+
+        /**
+         * 护膝
+         */
+        int KNEELET = 18;
+
+        /**
+         * 时装
+         */
+        int FASHION = 19;
+
+        /**
+         * 羽翼
+         */
+        int WING = 21;
+
+    }
+
+    /**
+     * 职业
+     */
+    interface Profession {
+
+        /**
+         * 战圣
+         */
+        int WARRIOR = 1;
+
+        /**
+         * 法神
+         */
+        int ENCHANTER = 2;
+
+        /**
+         * 道士
+         */
+        int TAOIST_PRIEST = 3;
+
+    }
+
+    /**
+     * 性别
+     */
+    interface Gender {
+
+        /**
+         * 男
+         */
+        long MALE = 1;
+
+        /**
+         * 女
+         */
+        long FEMALE = 2;
 
     }
 
