@@ -219,8 +219,8 @@
                                                 <TableView fx:id="itemList" minHeight="-Infinity" prefHeight="430.0" prefWidth="800.0">
                                                     <columns>
                                                         <TableColumn fx:id="check" editable="false" maxWidth="60.0" prefWidth="60.0" sortable="false" styleClass="text-center" text="选择" />
-                                                        <TableColumn fx:id="entry" editable="false" maxWidth="100.0" prefWidth="100.0" sortable="false" text="物品ID" />
-                                                        <TableColumn fx:id="name1" editable="false" maxWidth="130.0" prefWidth="130.0" sortable="false" text="物品名称" />
+                                                        <TableColumn fx:id="entry" editable="false" maxWidth="80.0" sortable="false" text="物品ID" />
+                                                        <TableColumn fx:id="name1" editable="false" maxWidth="200.0" prefWidth="150.0" sortable="false" text="物品名称" />
                                                         <TableColumn fx:id="description" editable="false" maxWidth="485.0" prefWidth="485.0" sortable="false" text="物品描述" />
                                                     </columns>
                                                     <contextMenu>
@@ -275,10 +275,10 @@
                                         </GridPane>
                                         <TableView fx:id="characterEquipments" onMouseClicked="#selectEquipment" prefHeight="396.0" prefWidth="800.0">
                                             <columns>
-                                                <TableColumn fx:id="slotText" editable="false" maxWidth="130.0" prefWidth="130.0" sortable="false" text="位置" />
-                                                <TableColumn fx:id="equipmentName" editable="false" maxWidth="200.0" prefWidth="200.0" sortable="false" text="名称" />
-                                                <TableColumn fx:id="strengthenText" editable="false" maxWidth="150.0" prefWidth="150.0" sortable="false" styleClass="text-center" text="强化等级" />
-                                                <TableColumn fx:id="zhulingText" editable="false" maxWidth="150.0" prefWidth="150.0" sortable="false" styleClass="text-center" text="注灵等级" />
+                                                <TableColumn fx:id="slotText" editable="false" maxWidth="120.0" prefWidth="120.0" sortable="false" text="位置" />
+                                                <TableColumn fx:id="equipmentName" editable="false" maxWidth="300.0" prefWidth="220.0" sortable="false" text="名称" />
+                                                <TableColumn fx:id="strengthenText" editable="false" maxWidth="140.0" prefWidth="140.0" sortable="false" styleClass="text-center" text="强化等级" />
+                                                <TableColumn fx:id="zhulingText" editable="false" maxWidth="140.0" prefWidth="140.0" sortable="false" styleClass="text-center" text="注灵等级" />
                                                 <TableColumn fx:id="isBound" editable="false" maxWidth="140.0" prefWidth="140.0" sortable="false" styleClass="text-center" text="是否绑定" />
                                             </columns>
                                             <contextMenu>
