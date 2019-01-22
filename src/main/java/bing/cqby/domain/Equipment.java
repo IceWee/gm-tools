@@ -225,7 +225,7 @@ public class Equipment {
      */
     public Integer getSlotByType() {
         Integer slot = null;
-        switch (type) {
+        switch (getType()) {
             case WEAPON: // 武器
                 slot = Constants.EquipmentSlot.WEAPON;
                 break;
@@ -351,9 +351,6 @@ public class Equipment {
                             case 15: // 护肩
                                 type = EquipmentType.SHOULDER_PAD;
                                 break;
-                            case 16: // 魂珠
-                                type = EquipmentType.SOUL_BEAD;
-                                break;
                             case 19: // 护膝
                                 type = EquipmentType.KNEELET;
                         }
@@ -366,6 +363,9 @@ public class Equipment {
                         break;
                     case 12: // 手镯
                         type = EquipmentType.BRACELET;
+                        break;
+                    case 16: // 魂珠
+                        type = EquipmentType.SOUL_BEAD;
                         break;
                     case 29: // 羽翼
                         type = EquipmentType.WING;
